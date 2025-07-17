@@ -26,7 +26,7 @@ const FamilyList = ({ family }) => {
           </p>
         </div>
         <div className="d-flex align-items-center flex-wrap gap-2">
-          <Link to={`/family/seemore/${family._id}`}>
+          <Link to={`/family/seemore/${family._id}`} target="_blank" rel="noopener noreferrer">
             <button type="button" className="btn btn-sm btn-qblue">
               Ver mais
             </button>
