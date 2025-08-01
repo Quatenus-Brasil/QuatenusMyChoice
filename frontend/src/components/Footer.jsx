@@ -2,7 +2,16 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="text-muted py-5 border-top">
+    <footer
+      className="text-muted py-5 border-top bg-body-secondary"
+      style={{
+        maxHeight: "200px",
+        overflowY: "hidden",
+        overflowX: "hidden",
+        minHeight: "unset",
+        height: "auto",
+        marginTop: "auto",
+      }}>
       <div className="container">
         <div className="row">
           <div className="col-md-6 mb-3">
@@ -21,8 +30,8 @@ const Footer = () => {
             <p>
               <Link to={"https://github.com/lucind0"} target="_blank" rel="noopener noreferrer">
                 Kauã Lucindo
-              </Link>{" "}
-              e Lilian Marinho
+              </Link>
+              , Lilian Marinho e Juliana Kopp
             </p>
           </div>
           <div className="col-md-6 mb-3 text-md-end">

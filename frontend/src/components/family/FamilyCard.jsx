@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import LimitedParagraph from "../LimitedParagraph";
 import { UserContext } from "../../context/userContext";
-// TODO: Adicionar páginação
 
 const FamilyCard = ({ family }) => {
   const { user } = useContext(UserContext);

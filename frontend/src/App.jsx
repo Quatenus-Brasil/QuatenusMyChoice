@@ -6,7 +6,6 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Footer from "./components/Footer.jsx";
 import Families from "./pages/family/Families.jsx";
-import SearchFamily from "./pages/family/SearchFamily.jsx";
 import CreateFamily from "./pages/family/CreateFamily.jsx";
 import SeeMoreFamily from "./pages/family/SeeMoreFamily.jsx";
 import EditFamily from "./pages/family/EditFamily.jsx";
@@ -33,205 +32,196 @@ function App() {
     <>
       <BrowserRouter>
         <Navbar />
-        <main>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute user={user}>
-                  <ActiveAccountRoute>
-                    <Home />
-                  </ActiveAccountRoute>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/families"
-              element={
-                <ProtectedRoute user={user}>
-                  <ActiveAccountRoute>
-                    <Families />
-                  </ActiveAccountRoute>
-                </ProtectedRoute>
-              }
-            />
-
-            {/* <Route
-              path="/family/search/:name"
-              element={
-                <ProtectedRoute user={user}>
-                  <ActiveAccountRoute>
-                    <SearchFamily />
-                  </ActiveAccountRoute>
-                </ProtectedRoute>
-              }
-            /> */}
-
-            <Route
-              path="/family/seemore/:id"
-              element={
-                <ProtectedRoute user={user}>
-                  <ActiveAccountRoute>
-                    <SeeMoreFamily />
-                  </ActiveAccountRoute>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/family/create"
-              element={
-                <ProtectedRoute user={user}>
-                  <AdminRoute user={user}>
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }} className="bg-light">
+          <main>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute user={user}>
                     <ActiveAccountRoute>
-                      <CreateFamily />
+                      <Home />
                     </ActiveAccountRoute>
-                  </AdminRoute>
-                </ProtectedRoute>
-              }
-            />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/family/edit/:id"
-              element={
-                <ProtectedRoute user={user}>
-                  <AdminRoute user={user}>
+              <Route
+                path="/families"
+                element={
+                  <ProtectedRoute user={user}>
                     <ActiveAccountRoute>
-                      <EditFamily />
+                      <Families />
                     </ActiveAccountRoute>
-                  </AdminRoute>
-                </ProtectedRoute>
-              }
-            />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/family/delete/:id"
-              element={
-                <ProtectedRoute user={user}>
-                  <AdminRoute user={user}>
+              <Route
+                path="/family/seemore/:id"
+                element={
+                  <ProtectedRoute user={user}>
                     <ActiveAccountRoute>
-                      <DeleteFamily />
+                      <SeeMoreFamily />
                     </ActiveAccountRoute>
-                  </AdminRoute>
-                </ProtectedRoute>
-              }
-            />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/logistics-sector/bom"
-              element={
-                <ProtectedRoute user={user}>
-                  <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
-                    <ActiveAccountRoute>
-                      <Bom />
-                    </ActiveAccountRoute>
-                  </RoleBasedRoute>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/logistics-sector/bom/search/:qbmCode"
-              element={
-                <ProtectedRoute user={user}>
-                  <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
-                    <ActiveAccountRoute>
-                      <SearchBom />
-                    </ActiveAccountRoute>
-                  </RoleBasedRoute>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/logistics-sector/bom/create"
-              element={
-                <ProtectedRoute user={user}>
-                  <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
-                    <ManagerRoute user={user}>
+              <Route
+                path="/family/create"
+                element={
+                  <ProtectedRoute user={user}>
+                    <AdminRoute user={user}>
                       <ActiveAccountRoute>
-                        <CreateBom />
+                        <CreateFamily />
                       </ActiveAccountRoute>
-                    </ManagerRoute>
-                  </RoleBasedRoute>
-                </ProtectedRoute>
-              }
-            />
+                    </AdminRoute>
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/logistics-sector/bom/edit/:id"
-              element={
-                <ProtectedRoute user={user}>
-                  <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
-                    <ManagerRoute user={user}>
+              <Route
+                path="/family/edit/:id"
+                element={
+                  <ProtectedRoute user={user}>
+                    <AdminRoute user={user}>
                       <ActiveAccountRoute>
-                        <EditBom />
+                        <EditFamily />
                       </ActiveAccountRoute>
-                    </ManagerRoute>
-                  </RoleBasedRoute>
-                </ProtectedRoute>
-              }
-            />
+                    </AdminRoute>
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/logistics-sector/bom/delete/:id"
-              element={
-                <ProtectedRoute user={user}>
-                  <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
-                    <ManagerRoute user={user}>
+              <Route
+                path="/family/delete/:id"
+                element={
+                  <ProtectedRoute user={user}>
+                    <AdminRoute user={user}>
                       <ActiveAccountRoute>
-                        <DeleteBom />
+                        <DeleteFamily />
                       </ActiveAccountRoute>
-                    </ManagerRoute>
-                  </RoleBasedRoute>
-                </ProtectedRoute>
-              }
-            />
+                    </AdminRoute>
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/faq"
-              element={
-                <ProtectedRoute user={user}>
-                  <ActiveAccountRoute>
-                    <Faq />
-                  </ActiveAccountRoute>
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/logistics-sector/bom"
+                element={
+                  <ProtectedRoute user={user}>
+                    <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
+                      <ActiveAccountRoute>
+                        <Bom />
+                      </ActiveAccountRoute>
+                    </RoleBasedRoute>
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/panel"
-              element={
-                <ProtectedRoute user={user}>
-                  <AdminRoute user={user}>
+              <Route
+                path="/logistics-sector/bom/search/:qbmCode"
+                element={
+                  <ProtectedRoute user={user}>
+                    <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
+                      <ActiveAccountRoute>
+                        <SearchBom />
+                      </ActiveAccountRoute>
+                    </RoleBasedRoute>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/logistics-sector/bom/create"
+                element={
+                  <ProtectedRoute user={user}>
+                    <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
+                      <ManagerRoute user={user}>
+                        <ActiveAccountRoute>
+                          <CreateBom />
+                        </ActiveAccountRoute>
+                      </ManagerRoute>
+                    </RoleBasedRoute>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/logistics-sector/bom/edit/:id"
+                element={
+                  <ProtectedRoute user={user}>
+                    <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
+                      <ManagerRoute user={user}>
+                        <ActiveAccountRoute>
+                          <EditBom />
+                        </ActiveAccountRoute>
+                      </ManagerRoute>
+                    </RoleBasedRoute>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/logistics-sector/bom/delete/:id"
+                element={
+                  <ProtectedRoute user={user}>
+                    <RoleBasedRoute user={user} roles={["técnica", "logística"]}>
+                      <ManagerRoute user={user}>
+                        <ActiveAccountRoute>
+                          <DeleteBom />
+                        </ActiveAccountRoute>
+                      </ManagerRoute>
+                    </RoleBasedRoute>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/faq"
+                element={
+                  <ProtectedRoute user={user}>
                     <ActiveAccountRoute>
-                      <Panel />
+                      <Faq />
                     </ActiveAccountRoute>
-                  </AdminRoute>
-                </ProtectedRoute>
-              }
-            />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/panel/users"
-              element={
-                <ProtectedRoute user={user}>
-                  <AdminRoute user={user}>
-                    <ActiveAccountRoute>
-                      <UserPanel />
-                    </ActiveAccountRoute>
-                  </AdminRoute>
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/panel"
+                element={
+                  <ProtectedRoute user={user}>
+                    <AdminRoute user={user}>
+                      <ActiveAccountRoute>
+                        <Panel />
+                      </ActiveAccountRoute>
+                    </AdminRoute>
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-        <Footer />
+              <Route
+                path="/panel/users"
+                element={
+                  <ProtectedRoute user={user}>
+                    <AdminRoute user={user}>
+                      <ActiveAccountRoute>
+                        <UserPanel />
+                      </ActiveAccountRoute>
+                    </AdminRoute>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
       </BrowserRouter>
     </>
   );

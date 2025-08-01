@@ -1,6 +1,5 @@
-import { useForm } from "react-hook-form";
 import { ViewContext } from "../../context/viewContext";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import Select from "react-select";
 import { UserContext } from "../../context/userContext";
 import { Link } from "react-router-dom";
@@ -8,23 +7,9 @@ import { Link } from "react-router-dom";
 const FamilySearchbar = ({ searchTerm, setSearchTerm, tagOptions, selectedTags, setSelectedTags }) => {
   const { user } = useContext(UserContext);
   const view = useContext(ViewContext);
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
-  useEffect(() => {
-    setValue("name", searchTerm);
-  }, [searchTerm, setValue]);
-
-  const onSearch = (data) => {
-    setSearchTerm(data.name || "");
-  };
 
   return (
-    <div className="input-group mb-3 mt-2" onChange={handleSubmit(onSearch)}>
+    <div className="input-group mb-3 mt-2">
       {user && user.admin === true ? (
         <Link to="/family/create">
           <div className="me-2" title="Criar nova família">
@@ -36,14 +21,7 @@ const FamilySearchbar = ({ searchTerm, setSearchTerm, tagOptions, selectedTags, 
           </div>
         </Link>
       ) : null}
-      <input
-        {...register("name")}
-        aria-invalid={errors.name ? "true" : "false"}
-        type="search"
-        className="form-control"
-        placeholder="Pesquise aqui"
-        defaultValue={searchTerm}
-      />
+      <input type="search" className="form-control" placeholder="Pesquise aqui" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       <div className="ms-2" style={{ minWidth: 220 }}>
         <Select isMulti options={tagOptions} value={selectedTags} onChange={setSelectedTags} placeholder="Filtros" />
       </div>
