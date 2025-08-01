@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
 import Card from "../components/Card";
+import JotformAgent from "../components/JotformAgent";
 
 const Home = () => {
   const { user } = useContext(UserContext);
@@ -49,6 +50,7 @@ const Home = () => {
           ))}
         </div>
       </div>
+      {/* <JotformAgent /> */}
     </div>
   );
 };
