@@ -6,6 +6,7 @@ import FamilyList from "../../components/family/FamilyList";
 import Cookies from "js-cookie";
 import { ViewContext } from "../../context/viewContext";
 import { SearchContext } from "../../context/searchContext";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const normalize = (str) =>
   str
@@ -15,7 +16,8 @@ const normalize = (str) =>
 
 const Families = () => {
   const [families, setFamilies] = useState([]);
-  const {view} = useContext(ViewContext);
+  const [isLoading, setIsLoading] = useState(true);
+  const { view } = useContext(ViewContext);
 
   const { searchTerm, setSearchTerm, selectedTags, setSelectedTags } = useContext(SearchContext);
 
@@ -28,9 +30,11 @@ const Families = () => {
       })
       .then((response) => {
         setFamilies(response.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error(error.response?.data?.message || error.message);
+        setIsLoading(false)
       });
   }, []);
 
@@ -63,31 +67,37 @@ const Families = () => {
   return (
     <div className="py-2 bg-light">
       <div className="container">
-        <div>
-          <FamilySearchbar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            tagOptions={tagOptions}
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-          />
-        </div>
-        {view === "card" ? (
-          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {filteredFamilies
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((family) => (
-                <FamilyCard key={family._id} family={family} />
-              ))}
-          </div>
+        {isLoading ? (
+          <LoadingSpinner />
         ) : (
-          <div className="row m-0 p-0">
-            {filteredFamilies
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((family) => (
-                <FamilyList key={family._id} family={family} />
-              ))}
-          </div>
+          <>
+            <div>
+              <FamilySearchbar
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                tagOptions={tagOptions}
+                selectedTags={selectedTags}
+                setSelectedTags={setSelectedTags}
+              />
+            </div>
+            {view === "card" ? (
+              <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {filteredFamilies
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((family) => (
+                    <FamilyCard key={family._id} family={family} />
+                  ))}
+              </div>
+            ) : (
+              <div className="row m-0 p-0">
+                {filteredFamilies
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((family) => (
+                    <FamilyList key={family._id} family={family} />
+                  ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
