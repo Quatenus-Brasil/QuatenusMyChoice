@@ -5,7 +5,7 @@ import FamilyCard from "../../components/family/FamilyCard";
 import FamilyList from "../../components/family/FamilyList";
 import Cookies from "js-cookie";
 import { ViewContext } from "../../context/viewContext";
-import { SearchContext } from "../../context/searchContext"; // <-- Adicione esta linha
+import { SearchContext } from "../../context/searchContext";
 
 const normalize = (str) =>
   str
@@ -15,9 +15,8 @@ const normalize = (str) =>
 
 const Families = () => {
   const [families, setFamilies] = useState([]);
-  const view = useContext(ViewContext);
+  const {view} = useContext(ViewContext);
 
-  // Use o contexto de busca em vez do estado local
   const { searchTerm, setSearchTerm, selectedTags, setSelectedTags } = useContext(SearchContext);
 
   useEffect(() => {
@@ -73,7 +72,7 @@ const Families = () => {
             setSelectedTags={setSelectedTags}
           />
         </div>
-        {view.view === "card" ? (
+        {view === "card" ? (
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {filteredFamilies
               .sort((a, b) => a.name.localeCompare(b.name))
