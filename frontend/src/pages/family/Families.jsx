@@ -5,15 +5,20 @@ import FamilyCard from "../../components/family/FamilyCard";
 import FamilyList from "../../components/family/FamilyList";
 import Cookies from "js-cookie";
 import { ViewContext } from "../../context/viewContext";
+import { SearchContext } from "../../context/searchContext"; // <-- Adicione esta linha
 
 const normalize = (str) =>
-  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 
 const Families = () => {
   const [families, setFamilies] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTags, setSelectedTags] = useState([]);
   const view = useContext(ViewContext);
+
+  // Use o contexto de busca em vez do estado local
+  const { searchTerm, setSearchTerm, selectedTags, setSelectedTags } = useContext(SearchContext);
 
   useEffect(() => {
     axios
@@ -33,12 +38,10 @@ const Families = () => {
   // Monta as opções únicas de tags dos produtos
   const tagOptions = useMemo(() => {
     const tagsSet = new Set();
-    families.forEach(family =>
-      family.products.forEach(product =>
-        (product.tags || []).forEach(tag => tagsSet.add(tag))
-      )
-    );
-    return Array.from(tagsSet).sort().map(tag => ({ value: tag, label: tag }));
+    families.forEach((family) => family.products.forEach((product) => (product.tags || []).forEach((tag) => tagsSet.add(tag))));
+    return Array.from(tagsSet)
+      .sort()
+      .map((tag) => ({ value: tag, label: tag }));
   }, [families]);
 
   // Filtra famílias por nome e tags selecionadas
@@ -52,11 +55,7 @@ const Families = () => {
         .filter(Boolean)
         .every((term) => normalizedProductName.includes(normalize(term)));
 
-      const matchesTags =
-        selectedTags.length === 0 ||
-        selectedTags.every((tag) =>
-          (product.tags || []).includes(tag.value)
-        );
+      const matchesTags = selectedTags.length === 0 || selectedTags.every((tag) => (product.tags || []).includes(tag.value));
 
       return matchesName && matchesTags;
     })
