@@ -1,10 +1,20 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../context/userContext";
 import Card from "../components/Card";
 import JotformAgent from "../components/JotformAgent";
+import { SearchContext } from "../context/searchContext";
 
 const Home = () => {
   const { user } = useContext(UserContext);
+  const { clearSearch } = useContext(SearchContext);
+
+  const handleClearSearch = () => {
+    clearSearch();
+  };
+
+  useEffect(() => {
+  handleClearSearch(); 
+  }, []);
 
   const cards = [
     {
