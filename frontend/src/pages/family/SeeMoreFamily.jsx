@@ -28,7 +28,6 @@ const SeeMoreFamily = () => {
       })
       .then((response) => {
         setFamily(response.data);
-        window.scrollTo(0, 0);
         setIsLoading(false);
       })
       .catch((error) => {

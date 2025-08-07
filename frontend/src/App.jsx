@@ -26,6 +26,7 @@ import RoleBasedRoute from "./components/routes/RoleBasedRoute.jsx";
 import ManagerRoute from "./components/routes/ManagerRoute.jsx";
 import ActiveAccountRoute from "./components/routes/ActiveAccountRoute.jsx";
 import SearchProvider from "./context/searchContext.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 function App() {
   const { user } = useContext(UserContext);
@@ -33,6 +34,7 @@ function App() {
     <>
       <BrowserRouter>
         <SearchProvider>
+          <ScrollToTop />
           <Navbar />
           <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }} className="bg-light">
             <main>
