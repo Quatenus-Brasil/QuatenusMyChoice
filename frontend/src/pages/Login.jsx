@@ -2,12 +2,15 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../context/userContext";
 import { userLogged } from "../services/userService";
 
+// TODO: Mover toda a lógica de cookies para o backend
+
 const Login = () => {
   const navigate = useNavigate();
+  const [rememberMe, setRememberMe] = useState(false);
   const { setUser } = useContext(UserContext);
   const {
     register,
@@ -20,7 +23,7 @@ const Login = () => {
     axios
       .post(`${import.meta.env.VITE_BASE_URL}/api/user/login`, data)
       .then(async (response) => {
-        Cookies.set("token", response.data, { expires: 3, sameSite: "strict" });
+        Cookies.set("token", response.data, { expires: rememberMe ? 365 : 3, sameSite: "strict" });
         const userResponse = await userLogged();
         setUser(userResponse.data);
         navigate("/");
@@ -62,6 +65,12 @@ const Login = () => {
                     />
                     <label htmlFor="floatingPassword">Senha</label>
                     {errors.password && <div className="invalid-feedback">{errors.password.message}</div>}
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <div title="Irá manter seu usuário logado por 1 ano.">
+                      <input className="form-check-input" type="checkbox" id="flexCheckDefault" onChange={(e) => setRememberMe(e.target.checked)} />
+                      <label className="ms-2 mb-3">Manter-me logado</label>
+                    </div>
                   </div>
                   <div className="d-flex justify-content-between">
                     <Link to="/register">
