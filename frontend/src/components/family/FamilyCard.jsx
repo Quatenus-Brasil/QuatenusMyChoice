@@ -7,7 +7,6 @@ const FamilyCard = ({ family }) => {
   const { user } = useContext(UserContext);
 
   return (
-    // TODO: Melhorar a responsividade do card em si, principalmente em telas menores aonde só aparece dois cards um do lado do outro
     <div className="col" style={{ minWidth: "300px" }}>
       <div className="card shadow-sm" style={{ height: "500px" }}>
         <img className="card-img-top" width="100%" height="225" src={family.bannerLink} />

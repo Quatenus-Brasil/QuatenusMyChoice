@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const FamilySearchbar = ({ searchTerm, setSearchTerm, tagOptions, selectedTags, setSelectedTags }) => {
   const { user } = useContext(UserContext);
-  const view = useContext(ViewContext);
+  const { view, setView } = useContext(ViewContext);
 
   return (
     <div className="input-group mb-3 mt-2">
@@ -37,8 +37,8 @@ const FamilySearchbar = ({ searchTerm, setSearchTerm, tagOptions, selectedTags, 
               className="form-check-input"
               type="checkbox"
               id="viewSwitch"
-              checked={view.view === "list"}
-              onChange={(e) => view.setView(e.target.checked ? "list" : "card")}
+              checked={view === "list"}
+              onChange={(e) => setView(e.target.checked ? "list" : "card")}
             />
             <label className="form-check-label" htmlFor="viewSwitch">
               Ver em lista
