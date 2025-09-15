@@ -1,26 +1,115 @@
 import { ViewContext } from "../../context/viewContext";
 import { useContext } from "react";
 import Select from "react-select";
+import axios from "axios";
+import Cookies from "js-cookie";
 import { UserContext } from "../../context/userContext";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const FamilySearchbar = ({ searchTerm, setSearchTerm, tagOptions, selectedTags, setSelectedTags }) => {
   const { user } = useContext(UserContext);
   const { view, setView } = useContext(ViewContext);
+  const [file, setFile] = useState(null);
+  const [showFamiliesModal, setShowFamiliesModal] = useState(false);
+
+  const handleFamiliesModal = () => {
+    setShowFamiliesModal(true);
+  };
+
+  const handleFamiliesDownload = () => {
+    axios
+      .get(`${import.meta.env.VITE_BASE_URL}/api/families/download`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "families.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      })
+      .catch((error) => {
+        console.error("Erro ao baixar o arquivo", error);
+        alert("Erro ao baixar o arquivo");
+      });
+  };
+
+  const handleFamiliesUpload = () => {
+    if (!file) {
+      alert("Nenhum arquivo selecionado");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    axios
+      .post(`${import.meta.env.VITE_BASE_URL}/api/families/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        alert(response.data.message);
+        setShowFamiliesModal(false);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Erro ao fazer upload do arquivo:", error);
+        alert(`Oops, algo deu errado! - ${error.response.data.message}`);
+      });
+  };
 
   return (
     <div className="input-group mb-3 mt-2">
       {user && user.admin === true ? (
-        <Link to="/family/create">
-          <div className="me-2" title="Criar nova família">
-            <button className="btn btn-qorange" type="button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-square-fill" viewBox="0 0 16 16">
-                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"></path>
-              </svg>
-            </button>
-          </div>
-        </Link>
+        <div className="me-2 bg-qorange">
+          <button className="btn btn-qorange" type="button" title="Upload" onClick={handleFamiliesModal}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16">
+              <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0z" />
+            </svg>
+          </button>
+          <button className="btn btn-qorange" type="button" title="Download" onClick={handleFamiliesDownload}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-arrow-down-fill" viewBox="0 0 16 16">
+              <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 6.854-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5a.5.5 0 0 1 1 0v3.793l1.146-1.147a.5.5 0 0 1 .708.708" />
+            </svg>
+          </button>
+        </div>
       ) : null}
+
+      {/* Family Modal */}
+      <div className={`modal fade ${showFamiliesModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Upload de Arquivo - Famílias</h5>
+            </div>
+            <div className="modal-body">
+              <input
+                type="file"
+                accept=".xls,.xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                className="form-control-file"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-sm btn-secondary" onClick={() => setShowFamiliesModal(false)}>
+                Fechar
+              </button>
+              <button type="button" className="btn btn-sm btn-qorange" onClick={handleFamiliesUpload}>
+                Enviar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <input type="search" className="form-control" placeholder="Pesquise aqui" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       <div className="ms-2" style={{ minWidth: 220 }}>
         <Select isMulti options={tagOptions} value={selectedTags} onChange={setSelectedTags} placeholder="Filtros" />

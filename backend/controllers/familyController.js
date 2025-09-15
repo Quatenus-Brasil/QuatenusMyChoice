@@ -8,32 +8,6 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const createFamily = async (request, response) => {
-  try {
-    if (!request.body.name || !request.body.qbmCode || !request.body.desc) {
-      return response.status(400).send({ message: "Preencha os campos obrigatórios" });
-    }
-
-    const newFamily = {
-      name: request.body.name,
-      qbmCode: request.body.qbmCode,
-      bannerLink: request.body.bannerLink,
-      desc: request.body.desc,
-      observations: request.body.observations,
-      links: request.body.links,
-      canvaLink: request.body.canvaLink,
-      addInfoLink: request.body.addInfoLink,
-      products: request.body.products,
-    };
-
-    const family = await Family.create(newFamily);
-    return response.status(201).json(family);
-  } catch (error) {
-    console.log(error);
-    return response.status(500).json({ message: error.message });
-  }
-};
-
 const findAll = async (request, response) => {
   try {
     const allFamilies = await Family.find({});
@@ -59,60 +33,6 @@ const findById = async (request, response) => {
     }
 
     return response.status(200).json(family);
-  } catch (error) {
-    console.log(error);
-    return response.status(500).json({ message: error.message });
-  }
-};
-
-// const findByName = async (request, response) => {
-//   try {
-//     const { name } = request.query;
-
-//     if (!name) {
-//       return response.status(400).json({ message: "Nome do produto não fornecido" });
-//     }
-
-//     // Normalizar o termo de busca
-//     const normalizedSearchTerms = diacritics.remove(name).toLowerCase().split(" ");
-
-//     const families = await Family.find();
-
-//     // Filtrar as famílias com base nos termos de busca normalizados
-//     const filteredFamilies = families.filter((family) => {
-//       return family.products.some((product) => {
-//         if (!product.name) return false; // Verifica se o campo name está definido
-//         const normalizedProductName = diacritics.remove(product.name).toLowerCase();
-//         return normalizedSearchTerms.every((term) => normalizedProductName.includes(term));
-//       });
-//     });
-
-//     if (filteredFamilies.length === 0) {
-//       return response.status(404).json({ message: "Nenhuma família encontrada" });
-//     }
-
-//     return response.status(200).json(filteredFamilies);
-//   } catch (error) {
-//     console.log(error);
-//     return response.status(500).json({ message: error.message });
-//   }
-// };
-
-const editFamily = async (request, response) => {
-  try {
-    // TODO: É possível atualizar a família e deixar o nome com uma string vazia.
-    // if (!request.body.name) {
-    //     return response.status(400).json({ message: "O nome da família é obrigátorio" })
-    // }
-
-    const { id } = request.params;
-    const family = await Family.findByIdAndUpdate(id, request.body);
-
-    if (!family) {
-      return response.status(404).json({ message: "Família não encontrada" });
-    }
-
-    return response.status(200).json({ message: "Família Editada" });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ message: error.message });
@@ -301,4 +221,4 @@ const uploadFamilies = async (request, response) => {
   }
 };
 
-export { findAll, findById, createFamily, editFamily, deleteFamily, downloadFamilies, uploadFamilies };
+export { findAll, findById, deleteFamily, downloadFamilies, uploadFamilies };

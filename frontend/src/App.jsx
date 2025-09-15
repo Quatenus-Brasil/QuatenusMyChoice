@@ -6,9 +6,7 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Footer from "./components/Footer.jsx";
 import Families from "./pages/family/Families.jsx";
-import CreateFamily from "./pages/family/CreateFamily.jsx";
 import SeeMoreFamily from "./pages/family/SeeMoreFamily.jsx";
-import EditFamily from "./pages/family/EditFamily.jsx";
 import DeleteFamily from "./pages/family/DeleteFamily.jsx";
 import Bom from "./pages/logistics-sector/Bom.jsx";
 import SearchBom from "./pages/logistics-sector/SearchBom.jsx";
@@ -68,32 +66,6 @@ function App() {
                       <ActiveAccountRoute>
                         <SeeMoreFamily />
                       </ActiveAccountRoute>
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="/family/create"
-                  element={
-                    <ProtectedRoute user={user}>
-                      <AdminRoute user={user}>
-                        <ActiveAccountRoute>
-                          <CreateFamily />
-                        </ActiveAccountRoute>
-                      </AdminRoute>
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="/family/edit/:id"
-                  element={
-                    <ProtectedRoute user={user}>
-                      <AdminRoute user={user}>
-                        <ActiveAccountRoute>
-                          <EditFamily />
-                        </ActiveAccountRoute>
-                      </AdminRoute>
                     </ProtectedRoute>
                   }
                 />
