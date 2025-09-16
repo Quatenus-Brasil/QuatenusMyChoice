@@ -113,17 +113,6 @@ const SeeMoreFamily = () => {
                   />
                 </svg>
               </button>
-              {user && user.admin === true ? (
-                <>
-                  <Link to={`/family/edit/${family._id}`}>
-                    <button type="button" className="btn btn-sm btn-warning me-1 text-white float-end">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
-                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
-                      </svg>
-                    </button>
-                  </Link>
-                </>
-              ) : null}
             </div>
             <div>
               <h3 className="mt-1">
@@ -145,20 +134,27 @@ const SeeMoreFamily = () => {
               ) : null}
             </div>
 
-            {family.links && Object.keys(family.links).length > 0 && (
-              <div>
-                <h6>Links úteis:</h6>
-                <ul>
-                  {Object.entries(family.links).map(([key, url]) => (
-                    <li key={key}>
-                      <Link to={url} target="_blank" rel="noopener noreferrer">
-                        {key}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <div>
+              <h6>Links úteis:</h6>
+              <ul>
+                <li key="Política de Descontos">
+                  <Link to={import.meta.env.VITE_DISCOUNT_POLICY_LINK} target="_blank" rel="noopener noreferrer">
+                    Política de Descontos
+                  </Link>
+                </li>
+                {family.links && Object.keys(family.links).length > 0 && (
+                  <>
+                    {Object.entries(family.links).map(([key, url]) => (
+                      <li key={key}>
+                        <Link to={url} target="_blank" rel="noopener noreferrer">
+                          {key}
+                        </Link>
+                      </li>
+                    ))}
+                  </>
+                )}
+              </ul>
+            </div>
 
             {family.observations ? (
               <div className="alert alert-warning p-2" role="alert">
