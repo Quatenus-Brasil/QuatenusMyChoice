@@ -542,9 +542,6 @@ const SeeMoreFamily = () => {
                           <th className="text-center">12 meses</th>
                           <th className="text-center">24 meses</th>
                           <th className="text-center">36 meses</th>
-                          <th scope="col" className="text-center">
-                            Fecho
-                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -587,11 +584,6 @@ const SeeMoreFamily = () => {
                                 )}
                                 {product.price.renovation[2] ? (
                                   <td className="text-center text-truncate align-middle">R$ {product.price.renovation[2]}</td>
-                                ) : (
-                                  <td className="text-center align-middle">N/A</td>
-                                )}
-                                {product.price.closure ? (
-                                  <td className="text-center text-truncate align-middle">R$ {product.price.closure}</td>
                                 ) : (
                                   <td className="text-center align-middle">N/A</td>
                                 )}
