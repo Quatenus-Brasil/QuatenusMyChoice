@@ -95,7 +95,7 @@ const SeeMoreFamily = () => {
     setMenuOpen((prev) => !prev);
   };
 
-  const hasTelemetry = family.products ? Object.keys(family.products).some((productName) => family.products[productName].telemetry) : false;
+  const hasTelemetry = family.products ? family.products.some((product) => product.qbmCode.toUpperCase().includes("TEL")) : false;
 
   return (
     <div className="py-2 bg-light">
@@ -251,48 +251,6 @@ const SeeMoreFamily = () => {
                   </div>
                 </div>
 
-                <div>
-                  <div className="table-responsive">
-                    <table className="table table-bordered table-hover">
-                      <thead>
-                        <tr>
-                          <th scope="col">Produto</th>
-                          <th colSpan="2" className="text-center">
-                            Entradas Livres
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="col"></th>
-                          <th scope="col" className="text-center">
-                            Digital
-                          </th>
-                          <th scope="col" className="text-center">
-                            Analógica
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {family.products.map((product) => {
-                          if (product.telemetry) {
-                            return (
-                              <tr key={product.name}>
-                                <td>
-                                  <p className="m-0 p-0" style={{ fontSize: "12px" }}>
-                                    {product.qbmCode}
-                                  </p>
-                                  <p className="m-0 p-0">{product.name}</p>
-                                </td>
-                                <td className="text-center">{product.telemetry.digital}</td>
-                                <td className="text-center">{product.telemetry.analog}</td>
-                              </tr>
-                            );
-                          }
-                          return null;
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
                 <hr />
               </div>
             )}
@@ -419,10 +377,10 @@ const SeeMoreFamily = () => {
                                   </span>
                                 </div>
                               </td>
-                              <td className="text-center align-middle">{product.price.withMembership[0] || "N/A"}</td>
-                              <td className="text-center align-middle">{product.price.withMembership[selectedWithMembership / 12] || "N/A"}</td>
-                              <td className="text-center align-middle">{product.price.noMembership[selectedNoMembership / 12 - 1] || "N/A"}</td>
-                              <td className="text-center align-middle">{product.price.closure || "N/A"}</td>
+                              <td className="text-center align-middle">R$ {product.price.withMembership[0] || "N/A"}</td>
+                              <td className="text-center align-middle">R$ {product.price.withMembership[selectedWithMembership / 12] || "N/A"}</td>
+                              <td className="text-center align-middle">R$ {product.price.noMembership[selectedNoMembership / 12 - 1] || "N/A"}</td>
+                              <td className="text-center align-middle">R$ {product.price.closure || "N/A"}</td>
                             </tr>
                           );
                         })
@@ -496,53 +454,53 @@ const SeeMoreFamily = () => {
                                 </div>
                               </td>
                               {product.price.withMembership[0] ? (
-                                <td className="text-center text-truncate align-middle">{product.price.withMembership[0]}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.withMembership[0]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
                               {product.price.withMembership[1] ? (
-                                <td className="text-center text-truncate align-middle">{product.price.withMembership[1]}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.withMembership[1]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
                               {product.price.withMembership[2] ? (
-                                <td className="text-center text-truncate align-middle">{product.price.withMembership[2]}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.withMembership[2]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
                               {product.price.withMembership[3] ? (
-                                <td className="text-center text-truncate align-middle">{product.price.withMembership[3]}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.withMembership[3]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
 
                               {product.price.noMembership[0] ? (
-                                <td className="text-center text-truncate align-middle">{product.price.noMembership[0]}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.noMembership[0]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
                               {product.price.noMembership[1] ? (
-                                <td className="text-center text-truncate align-middle">{product.price.noMembership[1]}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.noMembership[1]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
                               {product.price.noMembership[2] ? (
-                                <td className="text-center text-truncate align-middle">{product.price.noMembership[2]}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.noMembership[2]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
                               {product.price.noMembership[3] ? (
-                                <td className="text-center text-truncate align-middle">{product.price.noMembership[3]}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.noMembership[3]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
                               {product.price.noMembership[4] ? (
-                                <td className="text-center text-truncate align-middle">{product.price.noMembership[4]}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.noMembership[4]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
                               {product.price.closure ? (
-                                <td className="text-center text-truncate align-middle">{product.price.closure}</td>
+                                <td className="text-center text-truncate align-middle">R$ {product.price.closure}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}
@@ -618,22 +576,22 @@ const SeeMoreFamily = () => {
                                   </div>
                                 </td>
                                 {product.price.renovation[0] ? (
-                                  <td className="text-center text-truncate align-middle">{product.price.renovation[0]}</td>
+                                  <td className="text-center text-truncate align-middle">R$ {product.price.renovation[0]}</td>
                                 ) : (
                                   <td className="text-center align-middle">N/A</td>
                                 )}
                                 {product.price.renovation[1] ? (
-                                  <td className="text-center text-truncate align-middle">{product.price.renovation[1]}</td>
+                                  <td className="text-center text-truncate align-middle">R$ {product.price.renovation[1]}</td>
                                 ) : (
                                   <td className="text-center align-middle">N/A</td>
                                 )}
                                 {product.price.renovation[2] ? (
-                                  <td className="text-center text-truncate align-middle">{product.price.renovation[2]}</td>
+                                  <td className="text-center text-truncate align-middle">R$ {product.price.renovation[2]}</td>
                                 ) : (
                                   <td className="text-center align-middle">N/A</td>
                                 )}
                                 {product.price.closure ? (
-                                  <td className="text-center text-truncate align-middle">{product.price.closure}</td>
+                                  <td className="text-center text-truncate align-middle">R$ {product.price.closure}</td>
                                 ) : (
                                   <td className="text-center align-middle">N/A</td>
                                 )}

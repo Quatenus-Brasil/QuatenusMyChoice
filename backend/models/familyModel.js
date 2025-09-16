@@ -10,18 +10,10 @@ const productSchema = new Schema(
     qbmCode: String,
     desc: String,
     price: Object,
-    telemetry: Object,
     tags: [String],
   },
   { _id: false }
 );
-
-productSchema.pre("save", function (next) {
-  if (this.name) {
-    this.tags = this.name.split(/\s+/).filter(Boolean);
-  }
-  next();
-});
 
 const familySchema = new Schema(
   {
