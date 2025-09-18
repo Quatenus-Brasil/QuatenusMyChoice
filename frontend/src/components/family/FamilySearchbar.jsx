@@ -1,4 +1,3 @@
-import { ViewContext } from "../../context/viewContext";
 import { useContext } from "react";
 import Select from "react-select";
 import axios from "axios";
@@ -8,7 +7,6 @@ import { useState } from "react";
 
 const FamilySearchbar = ({ searchTerm, setSearchTerm, tagOptions, selectedTags, setSelectedTags }) => {
   const { user } = useContext(UserContext);
-  const { view, setView } = useContext(ViewContext);
   const [file, setFile] = useState(null);
   const [showFamiliesModal, setShowFamiliesModal] = useState(false);
 
@@ -86,7 +84,7 @@ const FamilySearchbar = ({ searchTerm, setSearchTerm, tagOptions, selectedTags, 
       <div className="ms-2" style={{ minWidth: 220 }}>
         <Select isMulti options={tagOptions} value={selectedTags} onChange={setSelectedTags} placeholder="Filtros" />
       </div>
-      <button className="btn btn-sm btn-qorange" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      {/* <button className="btn btn-sm btn-qorange" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
           <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
         </svg>
@@ -98,6 +96,7 @@ const FamilySearchbar = ({ searchTerm, setSearchTerm, tagOptions, selectedTags, 
               className="form-check-input"
               type="checkbox"
               id="viewSwitch"
+              disabled
               checked={view === "list"}
               onChange={(e) => setView(e.target.checked ? "list" : "card")}
             />
@@ -106,7 +105,7 @@ const FamilySearchbar = ({ searchTerm, setSearchTerm, tagOptions, selectedTags, 
             </label>
           </div>
         </li>
-      </ul>
+      </ul> */}
     </div>
   );
 };
