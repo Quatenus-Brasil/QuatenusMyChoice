@@ -31,15 +31,10 @@ const Footer = () => {
               <Link to={"https://github.com/lucind0"} target="_blank" rel="noopener noreferrer">
                 Kauã Lucindo
               </Link>
-              , Lilian Marinho e Juliana Kopp
+              , Lilian Marinho e <Link to={"https://www.linkedin.com/in/koppjuliana"} target="_blank" rel="noopener noreferrer">Juliana Kopp</Link>
             </p>
           </div>
           <div className="col-md-6 mb-3 text-md-end">
-            <p className="mb-1">
-              <Link to={"https://qbm01.quatenus-system.com.br/quatenus10/QBM/Login/Login.aspx"} target="_blank" rel="noopener noreferrer">
-                Abra um ticket
-              </Link>
-            </p>
             <p className="mb-1">
               <Link to={"https://github.com/kerstenbr/QuatenusMyChoice"} target="_blank" rel="noopener noreferrer">
                 Repo do Projeto
