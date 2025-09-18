@@ -1,7 +1,6 @@
 import { useContext, useEffect } from "react";
 import { UserContext } from "../context/userContext";
 import Card from "../components/Card";
-import JotformAgent from "../components/JotformAgent";
 import { SearchContext } from "../context/searchContext";
 
 const Home = () => {
@@ -60,7 +59,6 @@ const Home = () => {
           ))}
         </div>
       </div>
-      {/* <JotformAgent /> */}
     </div>
   );
 };
