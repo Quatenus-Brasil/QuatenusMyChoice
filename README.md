@@ -45,6 +45,7 @@ Para o frontend:
 Opcional:
 
 `VITE_GA_LINK` - Link para a pasta que contém os Guias de Ativação
+`VITE_DISCOUNT_POLICY_LINK` - Link para o pdf que contém a política de descontos 
 
 ## Rodando localmente
 
@@ -112,76 +113,6 @@ Inicie o servidor
 | :-------- | :--------- | :--------------- |
 | `id`      | `ObjectId` | **Obrigatório**. |
 
-#### Baixa um arquivo excel contendo todas as famílias
-
-```http
-  GET /api/families/download
-```
-
-| Parâmetro | Tipo     | Descrição                                                         |
-| :-------- | :------- | :---------------------------------------------------------------- |
-| `token`   | `string` | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
-
-#### Cria uma família
-
-```http
-  POST /api/families/
-```
-
-| Parâmetro | Tipo     | Descrição                                                         |
-| :-------- | :------- | :---------------------------------------------------------------- |
-| `token`   | `string` | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
-
-name, qbmCode e desc são obrigatórios.
-O campo "tags" é preenchido automaticamente.
-
-Exemplo de `body` a ser enviado:
-
-```json
-{
-  "name": "Fleet Teste",
-  "qbmCode": "ft.teste",
-  "bannerLink": "https://i.imgur.com/hANG5AI.png",
-  "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-  "observations": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  "links": {
-    "Google": "https://www.google.com/"
-  },
-  "canvaLink": "https://i.imgur.com/b8CiUT3.png",
-  "addInfoLink": "https://i.imgur.com/7FcJhFx.png",
-  "products": [
-    {
-      "name": "Fleet Teste",
-      "qbmCode": "ft.teste",
-      "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
-      "price": {
-        "withMembership": ["1000", "120", "115", "110"],
-        "noMembership": ["200", "195", "190", "185", "180"],
-        "renovation": ["150", "160", "170"],
-        "closure": "100",
-      },
-      "tags": ["Fleet", "Teste"]
-      "telemetry": {
-        "digital": "3",
-        "analog": "2"
-      }
-    },
-    {
-      "name": "Fleet Teste 2",
-      "qbmCode": "ft.teste.2",
-      "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
-      "price": {
-        "withMembership": ["1000", "120", "115", "110"],
-        "noMembership": ["200", "195", "190", "185", "180"],
-        "renovation": ["150", "160", "170"],
-        "closure": "200",
-      },
-      "tags": ["Fleet", "Teste", "2"]
-    }
-  ]
-}
-```
-
 #### Cria famílias via arquivo excel
 
 ```http
@@ -192,25 +123,6 @@ Exemplo de `body` a ser enviado:
 | :-------- | :------------ | :---------------------------------------------------------------- |
 | `file`    | `xls ou xlsx` | **Obrigatório**. Arquivo excel que será lido                      |
 | `token`   | `string`      | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
-
-#### Editar uma família
-
-```http
-  PUT /api/families/{id}
-```
-
-| Parâmetro | Tipo       | Descrição                                                         |
-| :-------- | :--------- | :---------------------------------------------------------------- |
-| `id`      | `ObjectId` | **Obrigatório**.                                                  |
-| `token`   | `string`   | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
-
-Exemplo de `body` a ser enviado:
-
-```json
-{
-  "name": "Fleet Teste Editado"
-}
-```
 
 #### Deletar uma família
 
@@ -336,133 +248,3 @@ Exemplo de `body` a ser enviado:
   "active": true
 }
 ```
-
-<!-- ### B.O.M:
-
-#### Retorna todos os boms
-
-```http
-  GET /api/bom/
-```
-
-#### Retorna os boms que contém o produto procurado
-
-```http
-  GET /api/bom/search?qbmCode={qbmCode}
-```
-
-| Parâmetro | Tipo     | Descrição        |
-| :-------- | :------- | :--------------- |
-| `qbmCode` | `string` | **Obrigatório**. |
-
-#### Retorna um bom pelo id
-
-```http
-  GET /api/bom/{id}
-```
-
-| Parâmetro | Tipo       | Descrição        |
-| :-------- | :--------- | :--------------- |
-| `id`      | `ObjectId` | **Obrigatório**. |
-
-#### Baixa um arquivo excel contendo todos os boms
-
-```http
-  GET /api/bom/download
-```
-
-| Parâmetro | Tipo     | Descrição                                                         |
-| :-------- | :------- | :---------------------------------------------------------------- |
-| `token`   | `string` | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
-
-#### Cria uma família
-
-```http
-  POST /api/bom/
-```
-
-| Parâmetro | Tipo     | Descrição                                                         |
-| :-------- | :------- | :---------------------------------------------------------------- |
-| `token`   | `string` | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
-
-qbmCode é obrigatório. Exemplo de `body` a ser enviado:
-
-```json
-{
-  "qbmCode": "FT.BASIC",
-  "car": {
-    "observation": "",
-    "starsoftCode": ["00", "01", "02", "05"],
-    "itens": ["RASTREADOR", "CHIP", "CHICOTE", "Kit de Instalação"],
-    "unit": ["un", "un", "un", "kit"],
-    "quantity": ["1", "1", "1", "1"]
-  },
-  "machine": {
-    "observation": "",
-    "starsoftCode": [],
-    "itens": [],
-    "unit": [],
-    "quantity": []
-  },
-  "motorcycle": {
-    "observation": "",
-    "starsoftCode": [],
-    "itens": [],
-    "unit": [],
-    "quantity": []
-  },
-  "truck": {
-    "observation": "",
-    "starsoftCode": [],
-    "itens": [],
-    "unit": [],
-    "quantity": []
-  },
-  "vessel": {
-    "observation": "",
-    "starsoftCode": [],
-    "itens": [],
-    "unit": [],
-    "quantity": []
-  }
-}
-```
-
-#### Cria boms via arquivo excel
-
-```http
-  POST /api/bom/upload
-```
-
-| Parâmetro | Tipo          | Descrição                                                         |
-| :-------- | :------------ | :---------------------------------------------------------------- |
-| `file`    | `xls ou xlsx` | **Obrigatório**. Arquivo excel que será lido                      |
-| `token`   | `string`      | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
-
-#### Editar um bom
-
-```http
-  PUT /api/bom/{id}
-```
-
-| Parâmetro | Tipo     | Descrição                                                         |
-| :-------- | :------- | :---------------------------------------------------------------- |
-| `token`   | `string` | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
-
-Exemplo de `body` a ser enviado:
-
-```json
-{
-  "qbmCode": "FT.BASIC.TESTE2"
-}
-```
-
-#### Deletar um bom
-
-```http
-  DELETE /api/bom/{id}
-```
-
-| Parâmetro | Tipo     | Descrição                                                         |
-| :-------- | :------- | :---------------------------------------------------------------- |
-| `token`   | `string` | **Obrigatório no Header**. Token do usuário, precisa ser um admin | -->
