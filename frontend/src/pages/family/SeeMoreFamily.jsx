@@ -194,7 +194,7 @@ const SeeMoreFamily = () => {
                   <h4>Telemetria</h4>
                   <div className="col-6">
                     <div className="table-responsive">
-                      <table className="table table-bordered table-hover">
+                      <table className="table table-bordered table-hover mb-0">
                         <thead>
                           <tr>
                             <th>Acessório Digital</th>
