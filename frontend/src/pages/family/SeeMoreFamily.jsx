@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { UserContext } from "../../context/userContext.jsx";
@@ -47,23 +47,44 @@ const SeeMoreFamily = () => {
       })
       .then((response) => {
         setAccessories(response.data);
-        // console.log(accessories);
-        // setIsLoading(false);
       })
       .catch((error) => {
-        // navigate("*");
         console.error(error.response.data.message);
-        // setIsLoading(false);
       });
   }, [id]);
 
-  const filteredAccessories = accessories.filter((accessory) =>{
-    if (accessory.name === "-") return;
-    
-    if (family.products.some((product) => product.tags.includes(accessory.name))) return accessory;
+  const filteredAccessories = useMemo(() => {
+    if (!family.products || !accessories || accessories.length === 0) {
+      return [];
+    }
 
-    // return accessory;
-  })
+    // Extrair todas as tags únicas dos produtos (normalizadas)
+    const allProductTags = new Set();
+    family.products.forEach((product) => {
+      if (product.tags && Array.isArray(product.tags)) {
+        product.tags.forEach((tag) => {
+          // console.log(`Tag encontrada: "${tag}"`); 
+          allProductTags.add(tag.toUpperCase());
+        });
+      }
+    });
+
+    // console.log("Todas as tags dos produtos:", Array.from(allProductTags)); 
+    // console.log(
+    //   "Acessórios disponíveis:",
+    //   accessories.map((acc) => acc.name)
+    // ); 
+
+    return accessories.filter((accessory) => {
+      if (accessory.name === "-" || accessory.name.trim() === "-") {
+        return false;
+      }
+
+      const hasMatch = allProductTags.has(accessory.name.toUpperCase());
+      // console.log(`Acessório "${accessory.name}" - Match: ${hasMatch}`);
+      return hasMatch;
+    });
+  }, [family.products, accessories]);
 
   const goBack = () => {
     navigate(-1);
@@ -377,7 +398,7 @@ const SeeMoreFamily = () => {
                       {family.products ? (
                         family.products.map((product) => {
                           return (
-                            <tr key={product.name}>
+                            <tr key={product.qbmCode}>
                               <td>
                                 <div className="d-flex align-items-center justify-content-between g-4">
                                   <span>

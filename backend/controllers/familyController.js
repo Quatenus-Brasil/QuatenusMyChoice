@@ -63,12 +63,12 @@ const uploadFamilies = async (request, response) => {
     }
 
     const workbook = XLSX.readFile(filePath);
-    const sheetName = "TABELA-MYCHOICE"
+    const sheetName = "TABELA-MYCHOICE";
     const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
     if (!workbook.Sheets[sheetName]) {
-      return response.status(400).json({ 
-        message: `Página "${sheetName}" não encontrada. Páginas encontradas: ${workbook.SheetNames.join(', ')}` 
+      return response.status(400).json({
+        message: `Página "${sheetName}" não encontrada. Páginas encontradas: ${workbook.SheetNames.join(", ")}`,
       });
     }
 
@@ -113,11 +113,19 @@ const uploadFamilies = async (request, response) => {
           desc: row.familyDesc,
           observations: row.familyObservations,
           links: row.familyLinks
-            ? row.familyLinks.split(";").reduce((acc, curr) => {
-                const [title, url] = curr.split(",");
-                acc[title.trim()] = url.trim();
-                return acc;
-              }, {})
+            ? row.familyLinks
+                .split(";")
+                .filter((curr) => curr.trim())
+                .reduce((acc, curr) => {
+                  const parts = curr.split(",");
+                  if (parts.length === 2) {
+                    const [title, url] = parts;
+                    if (title && url) {
+                      acc[title.trim()] = url.trim();
+                    }
+                  }
+                  return acc;
+                }, {})
             : {},
           canvaLink: row.familyCanvaLink,
           addInfoLink: row.familyAddInfoLink,
