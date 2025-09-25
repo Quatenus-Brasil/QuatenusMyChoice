@@ -18,6 +18,7 @@ const SeeMoreFamily = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [accessories, setAccessories] = useState([]);
 
   useEffect(() => {
     axios
@@ -36,6 +37,33 @@ const SeeMoreFamily = () => {
         setIsLoading(false);
       });
   }, [id]);
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_BASE_URL}/api/accessories/`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      })
+      .then((response) => {
+        setAccessories(response.data);
+        // console.log(accessories);
+        // setIsLoading(false);
+      })
+      .catch((error) => {
+        // navigate("*");
+        console.error(error.response.data.message);
+        // setIsLoading(false);
+      });
+  }, [id]);
+
+  const filteredAccessories = accessories.filter((accessory) =>{
+    if (accessory.name === "-") return;
+    
+    if (family.products.some((product) => product.tags.includes(accessory.name))) return accessory;
+
+    // return accessory;
+  })
 
   const goBack = () => {
     navigate(-1);
@@ -597,6 +625,41 @@ const SeeMoreFamily = () => {
                     </table>
                   </div>
                 )}
+              </div>
+            </div>
+
+            <hr />
+
+            <div>
+              <div className="row">
+                <h4>Acessórios:</h4>
+                <p className="m-0">Esses foram os acessórios encontrados nesta familia:</p>
+                <div className="col-12">
+                  <div className="table-responsive">
+                    <table className="table table-bordered table-hover mb-0">
+                      <thead>
+                        <tr>
+                          <th>Acessório</th>
+                          <th>Descrição</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredAccessories ? (
+                          filteredAccessories.map((accessory) => {
+                            return (
+                              <tr key={accessory._id}>
+                                <td>{accessory.name}</td>
+                                <td>{accessory.desc}</td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <p>Erro</p>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
 
