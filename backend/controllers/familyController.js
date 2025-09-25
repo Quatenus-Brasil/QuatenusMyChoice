@@ -63,7 +63,7 @@ const uploadFamilies = async (request, response) => {
     }
 
     const workbook = XLSX.readFile(filePath);
-    const sheetName = "CUSTO PRODUTOS (COMBO)"
+    const sheetName = "TABELA-MYCHOICE"
     const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
     if (!workbook.Sheets[sheetName]) {
@@ -73,84 +73,84 @@ const uploadFamilies = async (request, response) => {
     }
 
     for (const row of worksheet) {
-      if (!row["NOME DA FAMILIA"]) {
+      if (!row.familyName) {
         return response.status(400).json({
-          message: "Certifique-se de que NOME DA FAMILIA esteja preenchido em todas as linhas.",
+          message: "Certifique-se de que familyName esteja preenchido em todas as linhas.",
         });
       }
     }
 
     for (const row of worksheet) {
-      if (!row["CÓDIGO FAMÍLIA"]) {
+      if (!row.familyQbmCode) {
         return response.status(400).json({
-          message: "Certifique-se de que CÓDIGO FAMÍLIA esteja preenchido em todas as linhas.",
+          message: "Certifique-se de que familyQbmCode esteja preenchido em todas as linhas.",
         });
       }
     }
 
     for (const row of worksheet) {
-      if (!row["NOME DO PRODUTO"]) {
+      if (!row.productName) {
         return response.status(400).json({
-          message: "Certifique-se de que NOME DO PRODUTO esteja preenchido em todas as linhas.",
+          message: "Certifique-se de que productName esteja preenchido em todas as linhas.",
         });
       }
     }
 
     for (const row of worksheet) {
-      if (!row["CÓDIGO PRODUTO (COMBO)"]) {
+      if (!row.productQbmCode) {
         return response.status(400).json({
-          message: "Certifique-se de que CÓDIGO PRODUTO (COMBO) esteja preenchido em todas as linhas.",
+          message: "Certifique-se de que productQbmCode esteja preenchido em todas as linhas.",
         });
       }
     }
 
     const familiesMap = worksheet.reduce((acc, row) => {
-      if (!acc[row["NOME DA FAMILIA"]]) {
-        acc[row["NOME DA FAMILIA"]] = {
-          name: row["NOME DA FAMILIA"],
-          qbmCode: row["CÓDIGO FAMÍLIA"],
-          bannerLink: row["LINK DO BANNER"],
-          desc: row["DESCRIÇÃO PRODUTO (COMBO)"],
-          observations: row["OBSERVAÇÕES"],
-          links: row["LINKS ÚTEIS"]
-            ? row["LINKS ÚTEIS"].split(";").reduce((acc, curr) => {
+      if (!acc[row.familyName]) {
+        acc[row.familyName] = {
+          name: row.familyName,
+          qbmCode: row.familyQbmCode,
+          bannerLink: row.familyBannerLink,
+          desc: row.familyDesc,
+          observations: row.familyObservations,
+          links: row.familyLinks
+            ? row.familyLinks.split(";").reduce((acc, curr) => {
                 const [title, url] = curr.split(",");
                 acc[title.trim()] = url.trim();
                 return acc;
               }, {})
             : {},
-          canvaLink: row["LINK O CANVA"],
-          addInfoLink: row["LINK DA INFO ADICIONAL"],
+          canvaLink: row.familyCanvaLink,
+          addInfoLink: row.familyAddInfoLink,
           products: [],
         };
       }
 
       const productDetails = {
-        name: row["NOME DO PRODUTO"],
-        qbmCode: row["CÓDIGO PRODUTO (COMBO)"],
-        desc: row["DESCRIÇÃO PRODUTO (COMBO)"],
+        name: row.productName,
+        qbmCode: row.productQbmCode,
+        desc: row.productDesc,
         price: {
           withMembership: [
-            row["ADESÃO"],
-            row["12 MESES COM ADESÃO"],
-            row["24 MESES COM ADESÃO"],
-            row["36 MESES COM ADESÃO"],
+            row.productPriceWithMembership_adesao,
+            row.productPriceWithMembership_12meses,
+            row.productPriceWithMembership_24meses,
+            row.productPriceWithMembership_36meses,
           ],
           noMembership: [
-            row["12 MESES SEM ADESÃO"],
-            row["24 MESES SEM ADESÃO"],
-            row["36 MESES SEM ADESÃO"],
-            row["48 MESES SEM ADESÃO"],
-            row["60 MESES SEM ADESÃO"],
+            row.productPriceNoMembership_12meses,
+            row.productPriceNoMembership_24meses,
+            row.productPriceNoMembership_36meses,
+            row.productPriceNoMembership_48meses,
+            row.productPriceNoMembership_60meses,
           ],
-          renovation: [row["RENOVAÇÃO 12 MESES"], row["RENOVAÇÃO 24 MESES"], row["RENOVAÇÃO 36 MESES"]],
-          closure: row["FECHO"],
+          renovation: [row.productPriceRenovation_12meses, row.productPriceRenovation_24meses, row.productPriceRenovation_36meses],
+          closure: row.productPriceClosure,
         },
       };
 
       productDetails.tags = (productDetails.name || "").split(/\s+/).filter(Boolean);
 
-      acc[row["NOME DA FAMILIA"]].products.push(productDetails);
+      acc[row.familyName].products.push(productDetails);
 
       return acc;
     }, {});
