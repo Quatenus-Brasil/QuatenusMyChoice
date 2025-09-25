@@ -63,17 +63,17 @@ const SeeMoreFamily = () => {
     family.products.forEach((product) => {
       if (product.tags && Array.isArray(product.tags)) {
         product.tags.forEach((tag) => {
-          // console.log(`Tag encontrada: "${tag}"`); 
+          // console.log(`Tag encontrada: "${tag}"`);
           allProductTags.add(tag.toUpperCase());
         });
       }
     });
 
-    // console.log("Todas as tags dos produtos:", Array.from(allProductTags)); 
+    // console.log("Todas as tags dos produtos:", Array.from(allProductTags));
     // console.log(
     //   "Acessórios disponíveis:",
     //   accessories.map((acc) => acc.name)
-    // ); 
+    // );
 
     return accessories.filter((accessory) => {
       if (accessory.name === "-" || accessory.name.trim() === "-") {
@@ -649,40 +649,43 @@ const SeeMoreFamily = () => {
               </div>
             </div>
 
-            <hr />
-
-            <div>
-              <div className="row">
-                <h4>Acessórios:</h4>
-                <p className="m-0">Esses foram os acessórios encontrados nesta familia:</p>
-                <div className="col-12">
-                  <div className="table-responsive">
-                    <table className="table table-bordered table-hover mb-0">
-                      <thead>
-                        <tr>
-                          <th>Acessório</th>
-                          <th>Descrição</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredAccessories ? (
-                          filteredAccessories.map((accessory) => {
-                            return (
-                              <tr key={accessory._id}>
-                                <td>{accessory.name}</td>
-                                <td>{accessory.desc}</td>
-                              </tr>
-                            );
-                          })
-                        ) : (
-                          <p>Erro</p>
-                        )}
-                      </tbody>
-                    </table>
+            {filteredAccessories.length > 0 && (
+              <>
+                <hr />
+                <div>
+                  <div className="row">
+                    <h4>Acessórios:</h4>
+                    <p className="m-0">Esses foram os acessórios encontrados nesta familia:</p>
+                    <div className="col-12">
+                      <div className="table-responsive">
+                        <table className="table table-bordered table-hover mb-0">
+                          <thead>
+                            <tr>
+                              <th>Acessório</th>
+                              <th>Descrição</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredAccessories ? (
+                              filteredAccessories.map((accessory) => {
+                                return (
+                                  <tr key={accessory._id}>
+                                    <td>{accessory.name}</td>
+                                    <td>{accessory.desc}</td>
+                                  </tr>
+                                );
+                              })
+                            ) : (
+                              <p>Erro</p>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
 
             <hr />
 
