@@ -8,11 +8,10 @@ Página inicial:
 ![Screenshot](https://i.imgur.com/uNXbt4j.png)
 
 Famílias:
-![Screenshot](https://i.imgur.com/lEBxBXk.png)
-![Screenshot](https://i.imgur.com/yZx7pkg.png)
+![Screenshot](https://i.imgur.com/E8p1GO0.png)
 
 Pesquisa:
-![Screenshot](https://i.imgur.com/N2Yb5Af.png)
+![Screenshot](https://i.imgur.com/JpnSskH.png)
 
 ## Stack utilizada
 
@@ -134,6 +133,25 @@ Inicie o servidor
 | :-------- | :--------- | :---------------------------------------------------------------- |
 | `id`      | `ObjectId` | **Obrigatório**.                                                  |
 | `token`   | `string`   | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
+
+### Acessórios:
+
+#### Retorna todos os acessórios
+
+```http
+  GET /api/accessories/
+```
+
+#### Cria acessórios via arquivo excel
+
+```http
+  POST /api/accessories/upload
+```
+
+| Parâmetro | Tipo          | Descrição                                                         |
+| :-------- | :------------ | :---------------------------------------------------------------- |
+| `file`    | `xls ou xlsx` | **Obrigatório**. Arquivo excel que será lido                      |
+| `token`   | `string`      | **Obrigatório no Header**. Token do usuário, precisa ser um admin |
 
 ### Usuários:
 
