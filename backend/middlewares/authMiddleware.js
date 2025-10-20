@@ -41,30 +41,4 @@ const authenticateUser = async (request, response, next) => {
   }
 };
 
-const isAdmin = (request, response, next) => {
-  try {
-    if (!request.admin) {
-      return response.status(401).send({ message: "Sem permissão" });
-    }
-
-    next();
-  } catch (error) {
-    console.log(error);
-    return response.status(500).send({ message: error.message });
-  }
-};
-
-const isManager = (request, response, next) => {
-  try {
-    if (!request.manager && !request.admin) {
-      return response.status(401).send({ message: "Sem permissão" });
-    }
-
-    next();
-  } catch (error) {
-    console.log(error);
-    return response.status(500).send({ message: error.message });
-  }
-};
-
-export { authenticateUser, isAdmin, isManager };
+export { authenticateUser };
