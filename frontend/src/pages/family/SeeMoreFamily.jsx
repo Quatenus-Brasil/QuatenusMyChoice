@@ -380,6 +380,8 @@ const SeeMoreFamily = () => {
                             <option value={12}>12 meses</option>
                             <option value={24}>24 meses</option>
                             <option value={36}>36 meses</option>
+                            <option value={48}>48 meses</option>
+                            <option value={60}>60 meses</option>
                           </select>
                         </th>
                         <th colSpan="1" className="text-center">
@@ -447,7 +449,7 @@ const SeeMoreFamily = () => {
                         <th scope="col" className="text-center">
                           Adesão
                         </th>
-                        <th colSpan="3" className="text-center">
+                        <th colSpan="5" className="text-center">
                           Com adesão
                         </th>
                         <th colSpan="5" className="text-center">
@@ -462,6 +464,8 @@ const SeeMoreFamily = () => {
                         <th className="text-center">12 meses</th>
                         <th className="text-center">24 meses</th>
                         <th className="text-center">36 meses</th>
+                        <th className="text-center">48 meses</th>
+                        <th className="text-center">60 meses</th>
                         <th className="text-center">12 meses</th>
                         <th className="text-center">24 meses</th>
                         <th className="text-center">36 meses</th>
@@ -515,6 +519,16 @@ const SeeMoreFamily = () => {
                               )}
                               {product.price.withMembership[3] ? (
                                 <td className="text-center text-truncate align-middle">R$ {product.price.withMembership[3]}</td>
+                              ) : (
+                                <td className="text-center align-middle">N/A</td>
+                              )}
+                              {product.price.withMembership[4] ? (
+                                <td className="text-center text-truncate align-middle">R$ {product.price.withMembership[4]}</td>
+                              ) : (
+                                <td className="text-center align-middle">N/A</td>
+                              )}
+                              {product.price.withMembership[5] ? (
+                                <td className="text-center text-truncate align-middle">R$ {product.price.withMembership[5]}</td>
                               ) : (
                                 <td className="text-center align-middle">N/A</td>
                               )}

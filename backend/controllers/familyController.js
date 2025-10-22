@@ -143,6 +143,8 @@ const uploadFamilies = async (request, response) => {
             row.productPriceWithMembership_12meses,
             row.productPriceWithMembership_24meses,
             row.productPriceWithMembership_36meses,
+            row.productPriceWithMembership_48meses,
+            row.productPriceWithMembership_60meses,
           ],
           noMembership: [
             row.productPriceNoMembership_12meses,
