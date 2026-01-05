@@ -11,7 +11,6 @@ const createToken = (_id) => {
 
 const register = async (request, response) => {
   try {
-    console.log(request.body);
     const { active, name, email, password, role, sector, admin, manager } = request.body;
 
     if (typeof active !== "boolean" || !name || !email || !password || !sector || typeof admin !== "boolean" || typeof manager !== "boolean") {
@@ -28,6 +27,28 @@ const register = async (request, response) => {
     const token = createToken(user._id);
 
     return response.status(201).json({ success: true, message: "Usuário registrado com sucesso", result: token });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const createUser = async (request, response) => {
+  try {
+    const { active, name, email, password, role, sector, admin, manager } = request.body;
+
+    if (typeof active !== "boolean" || !name || !email || !password || !sector || typeof admin !== "boolean" || typeof manager !== "boolean") {
+      return response.status(400).json({ success: false, message: "Todos os campos são obrigatórios" });
+    }
+
+    const alreadyExists = await User.findOne({ email });
+    if (alreadyExists) {
+      return response.status(400).json({ success: false, message: "Este email já está em uso" });
+    }
+
+    const user = await User.create({ active, name, email, password, role, sector, admin, manager });
+
+    return response.status(201).json({ success: true, message: "Usuário registrado com sucesso", result: user.name });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -58,4 +79,4 @@ const register = async (request, response) => {
 //   }
 // };
 
-export { register };
+export { register, createUser };
