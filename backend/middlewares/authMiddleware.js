@@ -43,4 +43,14 @@ const authenticateUser = async (request, response, next) => {
   }
 };
 
-export { authenticateUser };
+const isAdmin = (request, response, next) => {
+  if (!request.admin) {
+    return response.status(403).json({
+      success: false,
+      message: "Sem Permissão: Você precisa ser um administrador para executar esta ação",
+    });
+  }
+  next();
+};
+
+export { authenticateUser, isAdmin };

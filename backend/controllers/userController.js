@@ -49,7 +49,7 @@ const createUser = async (request, response) => {
 
     const user = await User.create({ active, name, email, password, role, sector, admin, manager });
 
-    return response.status(201).json({ success: true, message: "Usuário registrado com sucesso", result: user.name });
+    return response.status(201).json({ success: true, message: "Usuário registrado com sucesso", result: user });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
