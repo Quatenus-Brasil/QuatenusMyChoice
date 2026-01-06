@@ -28,14 +28,16 @@ const authenticateUser = async (request, response, next) => {
       return response.status(404).json({ success: false, message: "Usuário não encontrado" });
     }
 
-    request.userId = user._id.toString();
-    request.active = user.active;
-    request.name = user.name;
-    request.email = user.email;
-    request.role = user.role;
-    request.admin = user.admin;
-    request.manager = user.manager;
-
+    request.user = {
+      _id: user._id.toString(),
+      active: user.active,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      admin: user.admin,
+      manager: user.manager,
+    }
+    
     next();
   } catch (error) {
     console.log(error);
@@ -44,7 +46,7 @@ const authenticateUser = async (request, response, next) => {
 };
 
 const isAdmin = (request, response, next) => {
-  if (!request.admin) {
+  if (!request.user.admin) {
     return response.status(403).json({
       success: false,
       message: "Sem Permissão: Você precisa ser um administrador para executar esta ação",
