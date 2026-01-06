@@ -6,7 +6,7 @@ import { validId } from "../middlewares/globalMiddleware.js";
 const router = express.Router();
 
 router.post("/register", register);
-router.post("/create", createUser);
+router.post("/create", authenticateUser, createUser);
 router.post("/login", login);
 
 export default router;
