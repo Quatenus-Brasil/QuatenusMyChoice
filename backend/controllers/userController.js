@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
+import { request } from "express";
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET_JWT, {
@@ -79,4 +80,20 @@ const login = async (request, response) => {
   }
 };
 
-export { register, createUser, login };
+const deleteUser = async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    const user = await User.findByIdAndDelete(id);
+
+    if (!user) {
+      return response.status(404).json({ success: false, message: "Usuário não encontrado" });
+    }
+
+    return response.status(200).json({ success: true, message: "Usuário deletado com sucesso", result: user });
+  } catch (error) {
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export { register, createUser, login, deleteUser };
