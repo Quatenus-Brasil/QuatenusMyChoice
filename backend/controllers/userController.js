@@ -55,28 +55,28 @@ const createUser = async (request, response) => {
   }
 };
 
-// const login = async (request, response) => {
-//   try {
-//     const { email, password } = request.body;
+const login = async (request, response) => {
+  try {
+    const { email, password } = request.body;
 
-//     const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email }).select("+password");
 
-//     if (!user) {
-//       return response.status(401).json({ message: "Credenciais inválidas" });
-//     }
+    if (!user) {
+      return response.status(401).json({ message: "Credenciais inválidas" });
+    }
 
-//     const passwordMatch = await bcrypt.compare(password, user.password);
-//     if (!passwordMatch) {
-//       return response.status(401).json({ message: "Credenciais inválidas" });
-//     }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return response.status(401).json({ message: "Credenciais inválidas" });
+    }
 
-//     const token = createToken(user._id);
+    const token = createToken(user._id);
 
-//     return response.status(200).json(token);
-//   } catch (error) {
-//     console.log(error);
-//     return response.status(500).json({ message: error.message });
-//   }
-// };
+    return response.status(200).json({ success: true, message: "Usuário logado com sucesso", result: token });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ message: error.message });
+  }
+};
 
-export { register, createUser };
+export { register, createUser, login };
