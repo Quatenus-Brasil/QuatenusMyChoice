@@ -33,40 +33,37 @@ const findAllItems = async (request, response) => {
   }
 };
 
-// const findItemById = async (request, response) => {
-//   try {
-//     const { id } = request.params;
+const findItemById = async (request, response) => {
+  try {
+    const { id } = request.params;
 
-//     if (!mongoose.Types.ObjectId.isValid(id)) {
-//       return response.status(404).json({ message: "Mongo ID inválido" });
-//     }
+    const item = await Item.findById(id);
 
-//     const item = await Item.findById(id);
+    if (!item) {
+      return response.status(404).json({ success: false, message: "Nenhum item encontrado" });
+    }
 
-//     if (!item) {
-//       return response.status(404).json({ message: "Nenhum item encontrado" });
-//     }
+    return response.status(200).json({ success: true, message: "Item encontrado com sucesso", result: item });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
 
-//     return response.status(200).json(item);
-//   } catch (error) {
-//     console.log(error);
-//     return response.status(500).json({ message: error.message });
-//   }
-// };
+const deleteItem = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const item = await Item.findByIdAndDelete(id);
 
-// const deleteItem = async (request, response) => {
-//   try {
-//     const { id } = request.params;
-//     const item = await Item.findByIdAndDelete(id);
+    if (!item) {
+      return response.status(404).json({ success: false, message: "Item não encontrado" });
+    }
 
-//     if (!item) {
-//       return response.status(404).json({ message: "Item não encontrado" });
-//     }
-//     return response.status(200).json({ message: `O item ${item} foi excluído com sucesso` });
-//   } catch (error) {
-//     console.log(error);
-//     return response.status(500).json({ message: error.message });
-//   }
-// };
+    return response.status(200).json({ success: true, message: `O item "${item.name}" foi excluído com sucesso` });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
 
-export { createItem, findAllItems };
+export { createItem, findAllItems, findItemById, deleteItem };
