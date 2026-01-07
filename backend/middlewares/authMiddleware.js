@@ -36,8 +36,8 @@ const authenticateUser = async (request, response, next) => {
       role: user.role,
       admin: user.admin,
       manager: user.manager,
-    }
-    
+    };
+
     next();
   } catch (error) {
     console.log(error);
@@ -46,13 +46,23 @@ const authenticateUser = async (request, response, next) => {
 };
 
 const isAdmin = (request, response, next) => {
-  if (!request.user.admin) {
+  if (request.user.admin === false) {
     return response.status(403).json({
       success: false,
-      message: "Sem Permissão: Você precisa ser um administrador para executar esta ação",
+      message: "Sem Permissão: Você precisa ser um administrador.",
     });
   }
   next();
 };
 
-export { authenticateUser, isAdmin };
+const isManager = (request, response, next) => {
+  if (request.user.manager === false && request.user.admin === false) {
+    return response.status(403).json({
+      success: false,
+      message: "Sem Permissão: Você precisa ser um gerente ou administrador.",
+    });
+  }
+  next();
+};
+
+export { authenticateUser, isAdmin, isManager };
