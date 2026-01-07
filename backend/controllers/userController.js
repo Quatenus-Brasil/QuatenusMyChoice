@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
+import { sendWelcomeEmail } from "../services/emailService.js";
 
 const createToken = (_id, rememberMe) => {
   return jwt.sign({ _id }, process.env.SECRET_JWT, {
@@ -47,6 +48,12 @@ const createUser = async (request, response) => {
     }
 
     const user = await User.create({ active, name, email, password, role, sector, admin, manager });
+
+    try {
+      await sendWelcomeEmail(email, name, password);
+    } catch (error) {
+      console.error("Erro ao enviar email de boas-vindas:", error);
+    }
 
     return response.status(201).json({ success: true, message: "Usuário registrado com sucesso", result: user });
   } catch (error) {
