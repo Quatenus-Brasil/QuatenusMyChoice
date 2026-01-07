@@ -10,6 +10,7 @@ const itemSchema = new Schema(
     code: {
       type: String,
       required: true,
+      unique: true,
     },
     desc: {
       type: String,
@@ -23,9 +24,17 @@ const itemSchema = new Schema(
       ref: "User",
       required: true,
     },
+    createdByName: {
+      type: String,
+      required: true,
+    },
     updatedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    updatedByName: {
+      type: String,
       required: true,
     },
   },

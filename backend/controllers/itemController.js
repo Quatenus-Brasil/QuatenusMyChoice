@@ -1,22 +1,35 @@
 import Item from "../models/itemModel.js";
 import mongoose from "mongoose";
 
-// const createItem = async (request, response) => {
-//     try {
+const createItem = async (request, response) => {
+  try {
+    const newItem = {
+      name: request.body.name,
+      code: request.body.code,
+      desc: request.body.desc,
+      price: request.body.price,
+      createdBy: request.user._id,
+      createdByName: request.user.name,
+      updatedBy: request.user._id,
+      updatedByName: request.user.name,
+    };
 
-//     } catch (error) {
-//     console.log(error);
-//     return response.status(500).json({ success: false, message: error.message });
-//   }
-// }
+    const item = await Item.create(newItem);
+
+    return response.status(201).json({ success: true, message: "Item criado com sucesso", result: item });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
 
 const findAllItems = async (request, response) => {
   try {
     const allItems = await Item.find({});
-    return response.status(200).json({success: true, message: "Todos os itens foram encontrados com sucesso", result: allItems});
+    return response.status(200).json({ success: true, message: "Todos os itens foram encontrados com sucesso", result: allItems });
   } catch (error) {
     console.log(error);
-    return response.status(500).json({success: false, message: error.message });
+    return response.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -56,4 +69,4 @@ const findAllItems = async (request, response) => {
 //   }
 // };
 
-export { findAllItems };
+export { createItem, findAllItems };
