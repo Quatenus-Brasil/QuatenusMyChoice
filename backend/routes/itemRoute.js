@@ -1,5 +1,5 @@
 import express from "express";
-import { findAllItems, createItem, findItemById, deleteItem } from "../controllers/itemController.js";
+import { createItem, findAllItems, findItemById, deleteItem } from "../controllers/itemController.js";
 import { authenticateUser, isAdmin } from "../middlewares/authMiddleware.js";
 import { validId } from "../middlewares/globalMiddleware.js";
 
