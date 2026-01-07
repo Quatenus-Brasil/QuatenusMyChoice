@@ -2,11 +2,10 @@ import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import { request } from "express";
 
-const createToken = (_id) => {
+const createToken = (_id, rememberMe) => {
   return jwt.sign({ _id }, process.env.SECRET_JWT, {
-    expiresIn: process.env.SECRET_JWT_EXP,
+    expiresIn: rememberMe ? "30d" : "3d",
   });
 };
 
@@ -58,7 +57,7 @@ const createUser = async (request, response) => {
 
 const login = async (request, response) => {
   try {
-    const { email, password } = request.body;
+    const { email, password, rememberMe } = request.body;
 
     const user = await User.findOne({ email }).select("+password");
 
@@ -71,7 +70,7 @@ const login = async (request, response) => {
       return response.status(401).json({ message: "Credenciais inválidas" });
     }
 
-    const token = createToken(user._id);
+    const token = createToken(user._id, rememberMe);
 
     return response.status(200).json({ success: true, message: "Usuário logado com sucesso", result: token });
   } catch (error) {
