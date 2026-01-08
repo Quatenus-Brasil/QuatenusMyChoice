@@ -70,16 +70,16 @@ const login = async (request, response) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (user.active === false) {
-      return response.status(403).json({ message: "Usuário inativo. Fale com um gerente ou administrador." });
+      return response.status(403).json({ success: false, message: "Usuário inativo. Fale com um gerente ou administrador." });
     }
 
     if (!user) {
-      return response.status(401).json({ message: "Credenciais inválidas" });
+      return response.status(401).json({ success: false, message: "Credenciais inválidas" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return response.status(401).json({ message: "Credenciais inválidas" });
+      return response.status(401).json({ success: false, message: "Credenciais inválidas" });
     }
 
     const token = createToken(user._id, rememberMe);
@@ -87,7 +87,7 @@ const login = async (request, response) => {
     return response.status(200).json({ success: true, message: "Usuário logado com sucesso", result: token });
   } catch (error) {
     console.log(error);
-    return response.status(500).json({ message: error.message });
+    return response.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -97,7 +97,7 @@ const findAllUsers = async (request, response) => {
     return response.status(200).json({ success: true, message: "Todos os usuários foram encontrados com sucesso", result: allUsers });
   } catch (error) {
     console.log(error);
-    return response.status(500).json({ message: error.message });
+    return response.status(500).json({ success: false,message: error.message });
   }
 };
 
