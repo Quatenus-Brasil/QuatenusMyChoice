@@ -34,6 +34,7 @@ const authenticateUser = async (request, response, next) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      sector: user.sector,
       admin: user.admin,
       manager: user.manager,
     };
@@ -49,7 +50,7 @@ const isAdmin = (request, response, next) => {
   if (request.user.admin === false) {
     return response.status(403).json({
       success: false,
-      message: "Sem Permissão: Você precisa ser um administrador.",
+      message: "Sem Permissão: Você precisa ser um administrador",
     });
   }
   next();
@@ -59,10 +60,37 @@ const isManager = (request, response, next) => {
   if (request.user.manager === false && request.user.admin === false) {
     return response.status(403).json({
       success: false,
-      message: "Sem Permissão: Você precisa ser um gerente ou administrador.",
+      message: "Sem Permissão: Você precisa ser um gerente ou administrador",
     });
   }
   next();
 };
 
-export { authenticateUser, isAdmin, isManager };
+const authorizedSectors = (...allowedSectors) => {
+  return (request, response, next) => {
+    console.log("Usuário autenticado:", request.user);
+    console.log("Setor do usuário:", request.user.sector);
+    console.log("Setores autorizados:", allowedSectors);
+    if (!allowedSectors.includes(request.user.sector) && request.user.admin === false) {
+      return response.status(403).json({
+        success: false,
+        message: "Sem Permissão: Você não pertence a um setor autorizado",
+      });
+    }
+    next();
+  };
+  // 01 Direção
+  // 02 Marketing
+  // 03 Vendas
+  // 04 Recursos Humanos
+  // 05 Compras
+  // 06 Suporte & Operações
+  // 07 Logística
+  // 08 Infraestrutura
+  // 09 Qualidade
+  // 10 Financeiro
+  // 11 Customer Success
+  // 12 Parcerias e Inovação
+};
+
+export { authenticateUser, isAdmin, isManager, authorizedSectors };
