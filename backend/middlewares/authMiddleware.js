@@ -68,9 +68,6 @@ const isManager = (request, response, next) => {
 
 const authorizedSectors = (...allowedSectors) => {
   return (request, response, next) => {
-    console.log("Usuário autenticado:", request.user);
-    console.log("Setor do usuário:", request.user.sector);
-    console.log("Setores autorizados:", allowedSectors);
     if (!allowedSectors.includes(request.user.sector) && request.user.admin === false) {
       return response.status(403).json({
         success: false,
