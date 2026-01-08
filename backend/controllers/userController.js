@@ -43,6 +43,7 @@ const createUser = async (request, response) => {
     }
 
     const alreadyExists = await User.findOne({ email });
+
     if (alreadyExists) {
       return response.status(400).json({ success: false, message: "Este email já está em uso" });
     }
@@ -86,6 +87,16 @@ const login = async (request, response) => {
   }
 };
 
+const findAllUsers = async (request, response) => {
+  try {
+    const allUsers = await User.find({});
+    return response.status(200).json({ success: true, message: "Todos os usuários foram encontrados com sucesso", result: allUsers });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ message: error.message });
+  }
+};
+
 const deleteUser = async (request, response) => {
   try {
     const { id } = request.params;
@@ -102,4 +113,76 @@ const deleteUser = async (request, response) => {
   }
 };
 
-export { register, createUser, login, deleteUser };
+const findUserById = async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return response.status(404).json({ success: false, message: "Usuário não encontrado" });
+    }
+
+    return response.status(200).json({ success: true, message: "Usuário encontrado com sucesso", result: user });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const editUser = async (request, response) => {
+  try {
+    const { id, active, name, email, password, role, sector, admin, manager } = request.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({ success: false, message: "ID de usuário inválido" });
+    }
+
+    if (typeof active !== "boolean" || !name || !email || !sector || typeof admin !== "boolean" || typeof manager !== "boolean") {
+      return response.status(400).json({ success: false, message: "Todos os campos são obrigatórios" });
+    }
+
+    const alreadyExists = await User.findOne({ email });
+
+    if (alreadyExists && alreadyExists._id.toString() !== id) {
+      return response.status(400).json({ success: false, message: "Este email já está em uso por outro usuário" });
+    }
+
+    const updatedUser = { active, name, email, role, sector, admin, manager };
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updatedUser.password = hashedPassword;
+    }
+
+    const user = await User.findByIdAndUpdate(id, updatedUser, { new: true });
+
+    return response.status(200).json({ success: true, message: "Usuário atualizado com sucesso", result: user });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const changePassword = async (request, response) => {
+  try {
+    const id = request.user._id;
+    const { newPassword } = request.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({ success: false, message: "ID de usuário inválido" });
+    }
+
+    if (!newPassword) {
+      return response.status(400).json({ success: false, message: "A nova senha é obrigatória" });
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await User.findByIdAndUpdate(id, { password: hashedPassword });
+
+    return response.status(200).json({ success: true, message: "Senha alterada com sucesso" });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export { register, createUser, login, findAllUsers, deleteUser, findUserById, editUser, changePassword };
