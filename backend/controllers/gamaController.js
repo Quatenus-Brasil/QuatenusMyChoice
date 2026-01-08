@@ -66,4 +66,22 @@ const deleteGama = async (request, response) => {
   }
 };
 
-export { createGama, findAllGamas, findGamaById, deleteGama };
+const editGama = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const gama = request.body;
+
+    const updatedGama = await Gama.findByIdAndUpdate(id, { ...gama, updatedBy: request.user._id, updatedByName: request.user.name }, { new: true, runValidators: true });
+
+    if (!updatedGama) {
+      return response.status(404).json({ success: false, message: "Gama não encontrada" });
+    }
+
+    return response.status(200).json({ success: true, message: "Gama editada", result: updatedGama });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export { createGama, findAllGamas, findGamaById, deleteGama, editGama };

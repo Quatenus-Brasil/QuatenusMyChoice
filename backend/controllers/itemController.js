@@ -66,4 +66,22 @@ const deleteItem = async (request, response) => {
   }
 };
 
-export { createItem, findAllItems, findItemById, deleteItem };
+const editItem = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const item = request.body;
+
+    const updatedItem = await Item.findByIdAndUpdate(id, { ...item, updatedBy: request.user._id, updatedByName: request.user.name }, { new: true, runValidators: true });
+
+    if (!updatedItem) {
+      return response.status(404).json({ success: false, message: "Item não encontrado" });
+    }
+
+    return response.status(200).json({ success: true, message: "Item editado", result: updatedItem });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export { createItem, findAllItems, findItemById, deleteItem, editItem };
