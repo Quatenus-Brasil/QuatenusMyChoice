@@ -69,6 +69,10 @@ const login = async (request, response) => {
 
     const user = await User.findOne({ email }).select("+password");
 
+    if (user.active === false) {
+      return response.status(403).json({ message: "Usuário inativo. Fale com um gerente ou administrador." });
+    }
+
     if (!user) {
       return response.status(401).json({ message: "Credenciais inválidas" });
     }
