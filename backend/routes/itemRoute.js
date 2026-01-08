@@ -10,4 +10,5 @@ router.get("/", authenticateUser, findAllItems);
 router.get("/:id", authenticateUser, validId, findItemById);
 router.delete("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), deleteItem);
 router.put("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editItem);
+
 export default router;

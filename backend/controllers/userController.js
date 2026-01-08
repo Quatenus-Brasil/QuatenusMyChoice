@@ -97,7 +97,7 @@ const findAllUsers = async (request, response) => {
     return response.status(200).json({ success: true, message: "Todos os usuários foram encontrados com sucesso", result: allUsers });
   } catch (error) {
     console.log(error);
-    return response.status(500).json({ success: false,message: error.message });
+    return response.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -137,7 +137,7 @@ const editUser = async (request, response) => {
   // TODO: Revisar essa função:
   // 1. Eu não sei dizer se isso aqui é a forma correta de atualizar o usuário.
   // Essa rota é para o admin/manager atualizar qualquer usuário, então o ID vai no corpo ou no params?
-  // 2. Isso ta sendo feito via PUT, eu preciso mesmo colocar TUDO no corpo do usuário? Não posso só passar o que veio? 
+  // 2. Isso ta sendo feito via PUT, eu preciso mesmo colocar TUDO no corpo do usuário? Não posso só passar o que veio?
   // Talvez eu possa fazer igual a edição de item, onde eu pego o que veio e atualizo só o que veio.
   try {
     const { id, active, name, email, password, role, sector, admin, manager } = request.body;

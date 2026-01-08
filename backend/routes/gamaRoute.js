@@ -5,9 +5,10 @@ import { validId } from "../middlewares/globalMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", authenticateUser, isManager, authorizedSectors("Suporte & Operações"), createGama)
+router.post("/", authenticateUser, isManager, authorizedSectors("Suporte & Operações"), createGama);
 router.get("/", authenticateUser, findAllGamas);
 router.get("/:id", authenticateUser, validId, findGamaById);
 router.delete("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), deleteGama);
 router.put("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editGama);
+
 export default router;

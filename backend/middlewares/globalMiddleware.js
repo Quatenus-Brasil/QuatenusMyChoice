@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const validId = (request, response, next) => {
   const idParam = request.params.id;
-  
+
   if (!idParam) {
     return response.status(400).json({ success: false, message: "ID é obrigatório" });
   }
@@ -10,7 +10,7 @@ const validId = (request, response, next) => {
   if (!mongoose.Types.ObjectId.isValid(idParam)) {
     return response.status(400).json({ success: false, message: "Mongo ID inválido" });
   }
-  
+
   next();
 };
 
