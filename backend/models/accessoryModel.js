@@ -28,8 +28,14 @@ const accessorySchema = new Schema(
       required: true,
       unique: true,
     },
+    numericCode: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     desc: {
       type: String,
+      required: true,
     },
     basePrice: {
       type: Number,
@@ -39,6 +45,11 @@ const accessorySchema = new Schema(
     installationService: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Item",
+      required: true,
+    },
+    riskFactor: {
+      type: Number,
+      default: 1,
       required: true,
     },
     createdBy: {

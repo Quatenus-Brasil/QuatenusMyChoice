@@ -6,10 +6,12 @@ const createAccessory = async (request, response) => {
     const newAccessory = {
       name: request.body.name,
       code: request.body.code,
+      numericCode: request.body.numericCode,
       desc: request.body.desc,
       basePrice: request.body.basePrice,
       itens: request.body.itens,
       installationService: request.body.installationService,
+      riskFactor: request.body.riskFactor,
       createdBy: request.user._id,
       createdByName: request.user.name,
       updatedBy: request.user._id,
