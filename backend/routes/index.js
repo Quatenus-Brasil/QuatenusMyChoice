@@ -1,18 +1,14 @@
 import { Router } from "express";
-import familyRoute from "./familyRoute.js";
-import accessoryRoute from "./accessoryRoute.js"
+import itemRoute from "./itemRoute.js";
 import userRoute from "./userRoute.js";
-import roleRoute from "./roleRoute.js";
-import bomRoute from "./bomRoute.js";
-import faqRoute from "./faqRoute.js";
+import gamaRoute from "./gamaRoute.js";
+import accessoryRoute from "./accessoryRoute.js";
 
 const router = Router();
 
-router.use("/families", familyRoute);
-router.use("/accessories", accessoryRoute);
+router.use("/item", itemRoute);
 router.use("/user", userRoute);
-router.use("/role", roleRoute);
-router.use("/bom", bomRoute);
-router.use("/faq", faqRoute)
+router.use("/gama", gamaRoute);
+router.use("/accessory", accessoryRoute);
 
 export default router;

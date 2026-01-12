@@ -1,12 +1,14 @@
 import express from "express";
-import multer from 'multer';
-import { findAll, uploadAccessories } from "../controllers/accessoryController.js";
-import { authenticateUser, isAdmin } from "../middlewares/authMiddleware.js";
+import { createAccessory, findAllAccessories, findAccessoryById, deleteAccessory, editAccessory } from "../controllers/accessoryController.js";
+import { authenticateUser, isAdmin, isManager, authorizedSectors } from "../middlewares/authMiddleware.js";
+import { validId } from "../middlewares/globalMiddleware.js";
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/accessories' });
 
-router.get("/", authenticateUser, findAll);
-router.post('/upload', authenticateUser, isAdmin, upload.single('file'), uploadAccessories);
+router.post("/", authenticateUser, isManager, authorizedSectors("Suporte & Operações"), createAccessory);
+router.get("/", authenticateUser, findAllAccessories);
+router.get("/:id", authenticateUser, validId, findAccessoryById);
+router.delete("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), deleteAccessory);
+router.put("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editAccessory);
 
 export default router;

@@ -1,99 +1,97 @@
 import Accessory from "../models/accessoryModel.js";
-import XLSX from "xlsx";
-import fs from "fs";
-import path from "path";
+import mongoose from "mongoose";
 
-const findAll = async (request, response) => {
+const createAccessory = async (request, response) => {
   try {
-    const accessories = await Accessory.find({});
-    return response.status(200).json(accessories);
+    const newAccessory = {
+      name: request.body.name,
+      code: request.body.code,
+      numericCode: request.body.numericCode,
+      desc: request.body.desc,
+      basePrice: request.body.basePrice,
+      itens: request.body.itens,
+      installationService: request.body.installationService,
+      riskFactor: request.body.riskFactor,
+      createdBy: request.user._id,
+      createdByName: request.user.name,
+      updatedBy: request.user._id,
+      updatedByName: request.user.name,
+    };
+
+    const accessory = await Accessory.create(newAccessory);
+
+    await accessory.populate("itens.item installationService");
+
+    return response.status(201).json({ success: true, message: "Acessório criado com sucesso", result: accessory });
   } catch (error) {
     console.log(error);
-    return response.status(500).json({ message: error.message });
+    return response.status(500).json({ success: false, message: error.message });
   }
 };
 
-const uploadAccessories = async (request, response) => {
-  const filePath = request.file.path;
-
+const findAllAccessories = async (request, response) => {
   try {
-    const fileExtension = path.extname(request.file.originalname);
-    if (fileExtension !== ".xls" && fileExtension !== ".xlsx") {
-      return response.status(400).json({ message: "Formato de arquivo inválido. Apenas arquivos xls ou xlsx são permitidos." });
-    }
-
-    const workbook = XLSX.readFile(filePath);
-    const sheetName = "BOM ACESSÓRIOS";
-    const rawWorksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-    if (!workbook.Sheets[sheetName]) {
-      return response.status(400).json({
-        message: `Página "${sheetName}" não encontrada. Páginas encontradas: ${workbook.SheetNames.join(", ")}`,
-      });
-    }
-
-    const nonEmptyRows = rawWorksheet.filter((row) => {
-      return row["SHORT-DESC"] || row["Descrição do produto"];
-    });
-
-    let lastAccessoryName = null;
-    let lastDescription = null;
-
-    const processedWorksheet = nonEmptyRows.map((row) => {
-      if (row["SHORT-DESC"]) {
-        lastAccessoryName = row["SHORT-DESC"];
-      }
-
-      if (row["Descrição do produto"]) {
-        lastDescription = row["Descrição do produto"];
-      }
-
-      return {
-        ...row,
-        "SHORT-DESC": row["SHORT-DESC"] || lastAccessoryName,
-        "Descrição do produto": row["Descrição do produto"] || lastDescription,
-      };
-    });
-
-    for (const row of processedWorksheet) {
-      if (!row["SHORT-DESC"]) {
-        return response.status(400).json({
-          message: "Certifique-se de que 'SHORT-DESC' esteja preenchido em todas as linhas.",
-        });
-      }
-
-      if (!row["Descrição do produto"]) {
-        return response.status(400).json({
-          message: "Certifique-se de que 'Descrição do produto' esteja preenchido em todas as linhas.",
-        });
-      }
-    }
-
-    const accessoriesMap = processedWorksheet.reduce((acc, row) => {
-      const accessoryName = row["SHORT-DESC"];
-
-      if (!acc[accessoryName]) {
-        acc[accessoryName] = {
-          name: accessoryName,
-          desc: row["Descrição do produto"],
-        };
-      }
-
-      return acc;
-    }, {});
-
-    for (const accessoryName in accessoriesMap) {
-      const accessoryData = accessoriesMap[accessoryName];
-      await Accessory.findOneAndUpdate({ name: accessoryName }, accessoryData, { upsert: true, new: true });
-    }
-
-    response.status(200).json({ message: `Sucesso ao fazer upload dos acessórios.` });
+    const allAccessories = await Accessory.find({}).populate("itens.item installationService");
+    return response.status(200).json({ success: true, message: "Todos os acessórios foram encontrados com sucesso", result: allAccessories });
   } catch (error) {
-    console.error("Erro ao processar o arquivo Excel:", error);
-    response.status(500).json({ message: "Erro ao processar o arquivo Excel dos acessórios." });
-  } finally {
-    fs.unlinkSync(filePath);
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
   }
 };
 
-export { findAll, uploadAccessories };
+const findAccessoryById = async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    const accessory = await Accessory.findById(id).populate("itens.item installationService");
+
+    if (!accessory) {
+      return response.status(404).json({ success: false, message: "Nenhum acessório encontrado" });
+    }
+
+    return response.status(200).json({ success: true, message: "Acessório encontrado com sucesso", result: accessory });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const deleteAccessory = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const accessory = await Accessory.findByIdAndDelete(id);
+
+    if (!accessory) {
+      return response.status(404).json({ success: false, message: "Acessório não encontrado" });
+    }
+
+    return response.status(200).json({ success: true, message: `O acessório "${accessory.name}" foi excluído com sucesso` });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const editAccessory = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const accessory = request.body;
+
+    const updatedAccessory = await Accessory.findByIdAndUpdate(
+      id,
+      { ...accessory, updatedBy: request.user._id, updatedByName: request.user.name },
+      { new: true, runValidators: true }
+    ).populate("itens.item installationService");
+
+    if (!updatedAccessory) {
+      return response.status(404).json({ success: false, message: "Acessório não encontrado" });
+    }
+
+    return response.status(200).json({ success: true, message: "Acessório editado", result: updatedAccessory });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export { createAccessory, findAllAccessories, findAccessoryById, deleteAccessory, editAccessory };

@@ -1,17 +1,16 @@
 import mongoose from "mongoose";
 
 const validId = (request, response, next) => {
-  let idParam;
-  if (!request.params.id) {
-    request.params.id = request.userId;
-    idParam = request.params.id;
-  } else {
-    idParam = request.params.id;
+  const idParam = request.params.id;
+
+  if (!idParam) {
+    return response.status(400).json({ success: false, message: "ID é obrigatório" });
   }
 
   if (!mongoose.Types.ObjectId.isValid(idParam)) {
-    return response.status(400).send({ message: "Mongo ID inválido" });
+    return response.status(400).json({ success: false, message: "Mongo ID inválido" });
   }
+
   next();
 };
 
