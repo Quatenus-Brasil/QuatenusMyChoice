@@ -88,12 +88,6 @@ accessorySchema.virtual("price").get(function () {
     return total;
   }, 0);
 
-  // Ao falar com a Bia, ela disse que o preço de instalação não deve ser somado ao preço total do acessório.
-  // let installationPrice = 0;
-  // if (this.installationService && this.installationService.price) {
-  //   installationPrice = this.installationService.price;
-  // }
-
   return this.basePrice + itensTotal;
 });
 
