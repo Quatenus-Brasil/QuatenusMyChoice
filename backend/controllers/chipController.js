@@ -1,4 +1,5 @@
 import Chip from "../models/chipModel.js";
+import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js";
 import mongoose from "mongoose";
 
 const createChip = async (request, response) => {
@@ -7,7 +8,7 @@ const createChip = async (request, response) => {
       name: request.body.name,
       code: request.body.code,
       desc: request.body.desc,
-      basePrice: request.body.basePrice,
+      basePrice: convertCurrencyToInt(request.body.basePrice),
       itens: request.body.itens,
       createdBy: request.user._id,
       createdByName: request.user.name,
@@ -29,7 +30,21 @@ const createChip = async (request, response) => {
 const findAllChips = async (request, response) => {
   try {
     const allChips = await Chip.find({}).populate("itens.item");
-    return response.status(200).json({ success: true, message: "Todos os chips foram encontrados com sucesso", result: allChips });
+    const allChipsWithConvertedPrice = allChips.map(chip => {
+      const chipObj = chip.toObject();
+      return {
+        ...chipObj,
+        basePrice: convertIntToCurrency(chip.basePrice),
+        itens: chipObj.itens.map(item => ({
+          ...item,
+          item: item.item ? {
+            ...item.item,
+            price: convertIntToCurrency(item.item.price)
+          } : null
+        }))
+      };
+    });
+    return response.status(200).json({ success: true, message: "Todos os chips foram encontrados com sucesso", result: allChipsWithConvertedPrice });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -45,7 +60,20 @@ const findChipById = async (request, response) => {
       return response.status(404).json({ success: false, message: "Nenhum chip encontrado" });
     }
 
-    return response.status(200).json({ success: true, message: "Chip encontrado com sucesso", result: chip });
+    const chipObj = chip.toObject();
+    const chipWithConvertedPrice = {
+      ...chipObj,
+      basePrice: convertIntToCurrency(chip.basePrice),
+      itens: chipObj.itens.map(item => ({
+        ...item,
+        item: item.item ? {
+          ...item.item,
+          price: convertIntToCurrency(item.item.price)
+        } : null
+      }))
+    };
+
+    return response.status(200).json({ success: true, message: "Chip encontrado com sucesso", result: chipWithConvertedPrice });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -73,9 +101,20 @@ const editChip = async (request, response) => {
     const { id } = request.params;
     const chip = request.body;
 
+    const updateData = {
+      ...chip,
+      updatedBy: request.user._id,
+      updatedByName: request.user.name
+    };
+
+    // Só converte o basePrice se ele estiver presente no body
+    if (chip.basePrice !== undefined) {
+      updateData.basePrice = convertCurrencyToInt(chip.basePrice);
+    }
+
     const updatedChip = await Chip.findByIdAndUpdate(
       id,
-      { ...chip, updatedBy: request.user._id, updatedByName: request.user.name },
+      updateData,
       { new: true, runValidators: true }
     ).populate("itens.item");
 
@@ -83,7 +122,20 @@ const editChip = async (request, response) => {
       return response.status(404).json({ success: false, message: "Chip não encontrado" });
     }
 
-    return response.status(200).json({ success: true, message: "Chip editado", result: updatedChip });
+    const chipObj = updatedChip.toObject();
+    const chipWithConvertedPrice = {
+      ...chipObj,
+      basePrice: convertIntToCurrency(updatedChip.basePrice),
+      itens: chipObj.itens.map(item => ({
+        ...item,
+        item: item.item ? {
+          ...item.item,
+          price: convertIntToCurrency(item.item.price)
+        } : null
+      }))
+    };
+
+    return response.status(200).json({ success: true, message: "Chip editado", result: chipWithConvertedPrice });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
