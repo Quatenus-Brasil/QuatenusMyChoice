@@ -32,6 +32,7 @@ const createAccessory = async (request, response) => {
 
 const findAllAccessories = async (request, response) => {
   try {
+    // TODO: Lembrar de desativar o populate do findAll quando for fazer o front
     const allAccessories = await Accessory.find({}).populate("itens.item installationService");
     const allAccessoriesWithConvertedPrice = allAccessories.map(accessory => {
       const accessoryObj = accessory.toObject();

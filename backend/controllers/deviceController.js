@@ -32,6 +32,7 @@ const createDevice = async (request, response) => {
 
 const findAllDevices = async (request, response) => {
   try {
+    // TODO: Lembrar de desativar o populate do findAll quando for fazer o front
     const allDevices = await Device.find({}).populate("itens.item installationService");
     const allDevicesWithConvertedPrice = allDevices.map(device => {
       const deviceObj = device.toObject();
