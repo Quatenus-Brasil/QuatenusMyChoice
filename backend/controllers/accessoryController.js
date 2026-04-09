@@ -1,6 +1,7 @@
 import Accessory from "../models/accessoryModel.js";
 import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js"; 
 import mongoose from "mongoose";
+import fs from "fs";
 
 const createAccessory = async (request, response) => {
   try {
@@ -102,7 +103,65 @@ const deleteAccessory = async (request, response) => {
       return response.status(404).json({ success: false, message: "Acessório não encontrado" });
     }
 
+    if (accessory.image && fs.existsSync(accessory.image)) {
+      fs.unlinkSync(accessory.image);
+    }
+
     return response.status(200).json({ success: true, message: `O acessório "${accessory.name}" foi excluído com sucesso` });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const uploadAccessoryImage = async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    const accessory = await Accessory.findById(id);
+    if (!accessory) {
+      if (request.file) fs.unlinkSync(request.file.path);
+      return response.status(404).json({ success: false, message: "Acessório não encontrado" });
+    }
+
+    if (accessory.image && fs.existsSync(accessory.image)) {
+      fs.unlinkSync(accessory.image);
+    }
+
+    const updatedAccessory = await Accessory.findByIdAndUpdate(
+      id,
+      { image: request.file.path },
+      { new: true }
+    );
+
+    return response.status(200).json({ success: true, message: "Imagem do acessório atualizada com sucesso", result: updatedAccessory });
+  } catch (error) {
+    if (request.file && fs.existsSync(request.file.path)) fs.unlinkSync(request.file.path);
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const deleteAccessoryImage = async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    const accessory = await Accessory.findById(id);
+    if (!accessory) {
+      return response.status(404).json({ success: false, message: "Acessório não encontrado" });
+    }
+
+    if (!accessory.image) {
+      return response.status(404).json({ success: false, message: "Este acessório não possui imagem" });
+    }
+
+    if (fs.existsSync(accessory.image)) {
+      fs.unlinkSync(accessory.image);
+    }
+
+    await Accessory.findByIdAndUpdate(id, { image: null });
+
+    return response.status(200).json({ success: true, message: "Imagem do acessório removida com sucesso" });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -159,4 +218,4 @@ const editAccessory = async (request, response) => {
   }
 };
 
-export { createAccessory, findAllAccessories, findAccessoryById, deleteAccessory, editAccessory };
+export { createAccessory, findAllAccessories, findAccessoryById, deleteAccessory, editAccessory, uploadAccessoryImage, deleteAccessoryImage };

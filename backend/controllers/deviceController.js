@@ -1,5 +1,6 @@
 import Device from "../models/deviceModel.js";
 import mongoose from "mongoose";
+import fs from "fs";
 import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js";
 
 const createDevice = async (request, response) => {
@@ -101,7 +102,65 @@ const deleteDevice = async (request, response) => {
       return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });
     }
 
+    if (device.image && fs.existsSync(device.image)) {
+      fs.unlinkSync(device.image);
+    }
+
     return response.status(200).json({ success: true, message: `O dispositivo "${device.name}" foi excluído com sucesso` });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const uploadDeviceImage = async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    const device = await Device.findById(id);
+    if (!device) {
+      if (request.file) fs.unlinkSync(request.file.path);
+      return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });
+    }
+
+    if (device.image && fs.existsSync(device.image)) {
+      fs.unlinkSync(device.image);
+    }
+
+    const updatedDevice = await Device.findByIdAndUpdate(
+      id,
+      { image: request.file.path },
+      { new: true }
+    );
+
+    return response.status(200).json({ success: true, message: "Imagem do dispositivo atualizada com sucesso", result: updatedDevice });
+  } catch (error) {
+    if (request.file && fs.existsSync(request.file.path)) fs.unlinkSync(request.file.path);
+    console.log(error);
+    return response.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const deleteDeviceImage = async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    const device = await Device.findById(id);
+    if (!device) {
+      return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });
+    }
+
+    if (!device.image) {
+      return response.status(404).json({ success: false, message: "Este dispositivo não possui imagem" });
+    }
+
+    if (fs.existsSync(device.image)) {
+      fs.unlinkSync(device.image);
+    }
+
+    await Device.findByIdAndUpdate(id, { image: null });
+
+    return response.status(200).json({ success: true, message: "Imagem do dispositivo removida com sucesso" });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -158,4 +217,4 @@ const editDevice = async (request, response) => {
   }
 };
 
-export { createDevice, findAllDevices, findDeviceById, deleteDevice, editDevice };
+export { createDevice, findAllDevices, findDeviceById, deleteDevice, editDevice, uploadDeviceImage, deleteDeviceImage };

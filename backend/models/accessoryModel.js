@@ -53,6 +53,10 @@ const accessorySchema = new Schema(
       default: 1,
       required: true,
     },
+    image: {
+      type: String,
+      default: null,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
