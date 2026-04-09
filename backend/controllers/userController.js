@@ -10,6 +10,7 @@ const createToken = (_id, rememberMe) => {
   });
 };
 
+// TODO: Desativar depois e não enviar para produção
 const register = async (request, response) => {
   try {
     const { active, name, email, password, role, sector, admin, manager } = request.body;
