@@ -41,8 +41,25 @@ const authenticateUser = async (request, response, next) => {
 
     next();
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return response.status(401).json({
+        success: false,
+        message: "Token expirado",
+      });
+    }
+
+    if (error instanceof jwt.JsonWebTokenError) {
+      return response.status(401).json({
+        success: false,
+        message: "Token inválido",
+      });
+    }
+
     console.log(error);
-    return response.status(500).json({ success: false, message: error.message });
+    return response.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
