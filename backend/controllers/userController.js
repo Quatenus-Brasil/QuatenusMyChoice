@@ -70,12 +70,12 @@ const login = async (request, response) => {
 
     const user = await User.findOne({ email }).select("+password");
 
-    if (user.active === false) {
-      return response.status(403).json({ success: false, message: "Usuário inativo. Fale com um gerente ou administrador." });
-    }
-
     if (!user) {
       return response.status(401).json({ success: false, message: "Credenciais inválidas" });
+    }
+
+    if (user.active === false) {
+      return response.status(403).json({ success: false, message: "Usuário inativo. Fale com um gerente ou administrador." });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
