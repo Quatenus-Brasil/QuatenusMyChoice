@@ -13,7 +13,6 @@ const createDevice = async (request, response) => {
       basePrice: convertCurrencyToInt(request.body.basePrice),
       itens: request.body.itens,
       installationService: request.body.installationService,
-      riskFactor: request.body.riskFactor,
       createdBy: request.user._id,
       createdByName: request.user.name,
       updatedBy: request.user._id,

@@ -48,11 +48,6 @@ const accessorySchema = new Schema(
       ref: "Item",
       required: true,
     },
-    riskFactor: {
-      type: Number,
-      default: 1,
-      required: true,
-    },
     image: {
       type: String,
       default: null,
