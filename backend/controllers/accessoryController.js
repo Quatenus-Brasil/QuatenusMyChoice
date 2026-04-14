@@ -3,6 +3,22 @@ import { convertCurrencyToInt, convertIntToCurrency } from "../services/currency
 import mongoose from "mongoose";
 import fs from "fs";
 
+const cleanupFiles = (files) => {
+  if (!files) return;
+  for (const fieldFiles of Object.values(files)) {
+    for (const file of fieldFiles) {
+      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+    }
+  }
+};
+
+const parseJsonField = (value) => {
+  if (typeof value === "string") {
+    try { return JSON.parse(value); } catch { return value; }
+  }
+  return value;
+};
+
 const createAccessory = async (request, response) => {
   try {
     const newAccessory = {
@@ -11,7 +27,7 @@ const createAccessory = async (request, response) => {
       numericCode: request.body.numericCode,
       desc: request.body.desc,
       basePrice: convertCurrencyToInt(request.body.basePrice),
-      itens: request.body.itens,
+      itens: parseJsonField(request.body.itens),
       installationService: request.body.installationService,
       createdBy: request.user._id,
       createdByName: request.user.name,
@@ -19,12 +35,17 @@ const createAccessory = async (request, response) => {
       updatedByName: request.user.name,
     };
 
+    if (request.files?.banner?.[0]) {
+      newAccessory.banner = request.files.banner[0].path;
+    }
+
     const accessory = await Accessory.create(newAccessory);
 
     await accessory.populate("itens.item installationService");
 
     return response.status(201).json({ success: true, message: "Acessório criado com sucesso", result: accessory });
   } catch (error) {
+    cleanupFiles(request.files);
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
   }
@@ -102,40 +123,12 @@ const deleteAccessory = async (request, response) => {
       return response.status(404).json({ success: false, message: "Acessório não encontrado" });
     }
 
-    if (accessory.image && fs.existsSync(accessory.image)) {
-      fs.unlinkSync(accessory.image);
+    if (accessory.banner && fs.existsSync(accessory.banner)) {
+      fs.unlinkSync(accessory.banner);
     }
 
     return response.status(200).json({ success: true, message: `O acessório "${accessory.name}" foi excluído com sucesso` });
   } catch (error) {
-    console.log(error);
-    return response.status(500).json({ success: false, message: error.message });
-  }
-};
-
-const uploadAccessoryImage = async (request, response) => {
-  try {
-    const { id } = request.params;
-
-    const accessory = await Accessory.findById(id);
-    if (!accessory) {
-      if (request.file) fs.unlinkSync(request.file.path);
-      return response.status(404).json({ success: false, message: "Acessório não encontrado" });
-    }
-
-    if (accessory.image && fs.existsSync(accessory.image)) {
-      fs.unlinkSync(accessory.image);
-    }
-
-    const updatedAccessory = await Accessory.findByIdAndUpdate(
-      id,
-      { image: request.file.path },
-      { new: true }
-    );
-
-    return response.status(200).json({ success: true, message: "Imagem do acessório atualizada com sucesso", result: updatedAccessory });
-  } catch (error) {
-    if (request.file && fs.existsSync(request.file.path)) fs.unlinkSync(request.file.path);
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
   }
@@ -150,17 +143,17 @@ const deleteAccessoryImage = async (request, response) => {
       return response.status(404).json({ success: false, message: "Acessório não encontrado" });
     }
 
-    if (!accessory.image) {
-      return response.status(404).json({ success: false, message: "Este acessório não possui imagem" });
+    if (!accessory.banner) {
+      return response.status(404).json({ success: false, message: "Este acessório não possui banner" });
     }
 
-    if (fs.existsSync(accessory.image)) {
-      fs.unlinkSync(accessory.image);
+    if (fs.existsSync(accessory.banner)) {
+      fs.unlinkSync(accessory.banner);
     }
 
-    await Accessory.findByIdAndUpdate(id, { image: null });
+    await Accessory.findByIdAndUpdate(id, { banner: null });
 
-    return response.status(200).json({ success: true, message: "Imagem do acessório removida com sucesso" });
+    return response.status(200).json({ success: true, message: "Banner do acessório removido com sucesso" });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -178,9 +171,21 @@ const editAccessory = async (request, response) => {
       updatedByName: request.user.name
     };
 
+    if (accessory.itens !== undefined) {
+      updateData.itens = parseJsonField(accessory.itens);
+    }
+
     // Só converte o basePrice se ele estiver presente no body
     if (accessory.basePrice !== undefined) {
       updateData.basePrice = convertCurrencyToInt(accessory.basePrice);
+    }
+
+    if (request.files?.banner?.[0]) {
+      const existing = await Accessory.findById(id);
+      if (existing?.banner && fs.existsSync(existing.banner)) {
+        fs.unlinkSync(existing.banner);
+      }
+      updateData.banner = request.files.banner[0].path;
     }
 
     const updatedAccessory = await Accessory.findByIdAndUpdate(
@@ -212,9 +217,10 @@ const editAccessory = async (request, response) => {
 
     return response.status(200).json({ success: true, message: "Acessório editado", result: accessoryWithConvertedPrice });
   } catch (error) {
+    cleanupFiles(request.files);
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
   }
 };
 
-export { createAccessory, findAllAccessories, findAccessoryById, deleteAccessory, editAccessory, uploadAccessoryImage, deleteAccessoryImage };
+export { createAccessory, findAllAccessories, findAccessoryById, deleteAccessory, editAccessory, deleteAccessoryImage };

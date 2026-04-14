@@ -48,7 +48,7 @@ const accessorySchema = new Schema(
       ref: "Item",
       required: true,
     },
-    image: {
+    banner: {
       type: String,
       default: null,
     },

@@ -4,8 +4,8 @@ import Accessory from "../models/accessoryModel.js";
 const findAllImages = async (request, response) => {
   try {
     const [devices, accessories] = await Promise.all([
-      Device.find({ image: { $ne: null } }, "_id name code image"),
-      Accessory.find({ image: { $ne: null } }, "_id name code image"),
+      Device.find({ banner: { $ne: null } }, "_id name code banner"),
+      Accessory.find({ banner: { $ne: null } }, "_id name code banner"),
     ]);
 
     const baseUrl = `${request.protocol}://${request.get("host")}`;
@@ -15,13 +15,13 @@ const findAllImages = async (request, response) => {
         _id: d._id,
         name: d.name,
         code: d.code,
-        imageUrl: `${baseUrl}/${d.image.replace(/\\/g, "/")}`,
+        imageUrl: `${baseUrl}/${d.banner.replace(/\\/g, "/")}`,
       })),
       accessories: accessories.map((a) => ({
         _id: a._id,
         name: a.name,
         code: a.code,
-        imageUrl: `${baseUrl}/${a.image.replace(/\\/g, "/")}`,
+        imageUrl: `${baseUrl}/${a.banner.replace(/\\/g, "/")}`,
       })),
     };
 

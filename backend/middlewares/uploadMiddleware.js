@@ -8,12 +8,11 @@ const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const createUploader = (folder) => {
   const dest = path.join("uploads", folder);
 
-  if (!fs.existsSync(dest)) {
-    fs.mkdirSync(dest, { recursive: true });
-  }
-
   const storage = multer.diskStorage({
     destination: (_req, _file, cb) => {
+      if (!fs.existsSync(dest)) {
+        fs.mkdirSync(dest, { recursive: true });
+      }
       cb(null, dest);
     },
     filename: (_req, file, cb) => {

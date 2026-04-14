@@ -48,7 +48,7 @@ const deviceSchema = new Schema(
       ref: "Item",
       required: true,
     },
-    image: {
+    banner: {
       type: String,
       default: null,
     },
