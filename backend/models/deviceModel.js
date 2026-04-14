@@ -43,11 +43,6 @@ const deviceSchema = new Schema(
       required: true,
     },
     itens: [itensSchema],
-    installationService: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Item",
-      required: true,
-    },
     banner: {
       type: String,
       default: null,

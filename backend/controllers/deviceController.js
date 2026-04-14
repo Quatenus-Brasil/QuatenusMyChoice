@@ -14,7 +14,11 @@ const cleanupFiles = (files) => {
 
 const parseJsonField = (value) => {
   if (typeof value === "string") {
-    try { return JSON.parse(value); } catch { return value; }
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
   }
   return value;
 };
@@ -28,7 +32,6 @@ const createDevice = async (request, response) => {
       desc: request.body.desc,
       basePrice: convertCurrencyToInt(request.body.basePrice),
       itens: parseJsonField(request.body.itens),
-      installationService: request.body.installationService,
       createdBy: request.user._id,
       createdByName: request.user.name,
       updatedBy: request.user._id,
@@ -41,7 +44,7 @@ const createDevice = async (request, response) => {
 
     const device = await Device.create(newDevice);
 
-    await device.populate("itens.item installationService");
+    await device.populate("itens.item");
 
     return response.status(201).json({ success: true, message: "Dispositivo criado com sucesso", result: device });
   } catch (error) {
@@ -54,23 +57,21 @@ const createDevice = async (request, response) => {
 const findAllDevices = async (request, response) => {
   try {
     // TODO: Lembrar de desativar o populate do findAll quando for fazer o front
-    const allDevices = await Device.find({}).populate("itens.item installationService");
-    const allDevicesWithConvertedPrice = allDevices.map(device => {
+    const allDevices = await Device.find({}).populate("itens.item");
+    const allDevicesWithConvertedPrice = allDevices.map((device) => {
       const deviceObj = device.toObject();
       return {
         ...deviceObj,
         basePrice: convertIntToCurrency(device.basePrice),
-        itens: deviceObj.itens.map(item => ({
+        itens: deviceObj.itens.map((item) => ({
           ...item,
-          item: item.item ? {
-            ...item.item,
-            price: convertIntToCurrency(item.item.price)
-          } : null
+          item: item.item
+            ? {
+                ...item.item,
+                price: convertIntToCurrency(item.item.price),
+              }
+            : null,
         })),
-        installationService: deviceObj.installationService ? {
-          ...deviceObj.installationService,
-          price: convertIntToCurrency(deviceObj.installationService.price)
-        } : null
       };
     });
     return response.status(200).json({ success: true, message: "Todos os dispositivos foram encontrados com sucesso", result: allDevicesWithConvertedPrice });
@@ -84,7 +85,7 @@ const findDeviceById = async (request, response) => {
   try {
     const { id } = request.params;
 
-    const device = await Device.findById(id).populate("itens.item installationService");
+    const device = await Device.findById(id).populate("itens.item");
     if (!device) {
       return response.status(404).json({ success: false, message: "Nenhum dispositivo encontrado" });
     }
@@ -93,17 +94,15 @@ const findDeviceById = async (request, response) => {
     const deviceWithConvertedPrice = {
       ...deviceObj,
       basePrice: convertIntToCurrency(device.basePrice),
-      itens: deviceObj.itens.map(item => ({
+      itens: deviceObj.itens.map((item) => ({
         ...item,
-        item: item.item ? {
-          ...item.item,
-          price: convertIntToCurrency(item.item.price)
-        } : null
+        item: item.item
+          ? {
+              ...item.item,
+              price: convertIntToCurrency(item.item.price),
+            }
+          : null,
       })),
-      installationService: deviceObj.installationService ? {
-        ...deviceObj.installationService,
-        price: convertIntToCurrency(deviceObj.installationService.price)
-      } : null
     };
 
     return response.status(200).json({ success: true, message: "Dispositivo encontrado com sucesso", result: deviceWithConvertedPrice });
@@ -167,7 +166,7 @@ const editDevice = async (request, response) => {
     const updateData = {
       ...device,
       updatedBy: request.user._id,
-      updatedByName: request.user.name
+      updatedByName: request.user.name,
     };
 
     if (device.itens !== undefined) {
@@ -187,11 +186,7 @@ const editDevice = async (request, response) => {
       updateData.banner = request.files.banner[0].path;
     }
 
-    const updatedDevice = await Device.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    ).populate("itens.item installationService");
+    const updatedDevice = await Device.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).populate("itens.item");
 
     if (!updatedDevice) {
       return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });
@@ -201,17 +196,15 @@ const editDevice = async (request, response) => {
     const deviceWithConvertedPrice = {
       ...deviceObj,
       basePrice: convertIntToCurrency(updatedDevice.basePrice),
-      itens: deviceObj.itens.map(item => ({
+      itens: deviceObj.itens.map((item) => ({
         ...item,
-        item: item.item ? {
-          ...item.item,
-          price: convertIntToCurrency(item.item.price)
-        } : null
+        item: item.item
+          ? {
+              ...item.item,
+              price: convertIntToCurrency(item.item.price),
+            }
+          : null,
       })),
-      installationService: deviceObj.installationService ? {
-        ...deviceObj.installationService,
-        price: convertIntToCurrency(deviceObj.installationService.price)
-      } : null
     };
 
     return response.status(200).json({ success: true, message: "Dispositivo editado", result: deviceWithConvertedPrice });
