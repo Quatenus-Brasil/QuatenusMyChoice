@@ -2,23 +2,6 @@ import mongoose from "mongoose";
 import { Schema } from "mongoose";
 import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js";
 
-
-const itensSchema = new Schema({
-  amount: {
-    type: Number,
-    required: true,
-  },
-  unit: {
-    type: String,
-    required: true,
-  },
-  item: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Item",
-    required: true,
-  },
-});
-
 const chipSchema = new Schema(
   {
     name: {
@@ -34,11 +17,10 @@ const chipSchema = new Schema(
       type: String,
       required: true,
     },
-    basePrice: {
+    price: {
       type: Number,
       required: true,
     },
-    itens: [itensSchema],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -60,23 +42,6 @@ const chipSchema = new Schema(
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
-
-// Virtual field para calcular o preço total dinamicamente
-chipSchema.virtual("price").get(function () {
-  if (!this.itens || this.itens.length === 0) {
-    return convertIntToCurrency(this.basePrice);
-  }
-
-  //soma: (amount * item.price) para cada item
-  const itensTotal = this.itens.reduce((total, itemEntry) => {
-    if (itemEntry.item && itemEntry.item.price) {
-      return total + itemEntry.amount * itemEntry.item.price;
-    }
-    return total;
-  }, 0);
-  const total = this.basePrice + itensTotal;
-  return convertIntToCurrency(total);
-});
 
 const Chip = mongoose.model("Chip", chipSchema);
 
