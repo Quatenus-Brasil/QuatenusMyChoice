@@ -8,8 +8,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/uploads", express.static("uploads"));
-
+// TODO: revisar isso aqui depois, configurar direito
 app.use(
   cors({
     origin: "*",
