@@ -22,10 +22,6 @@ const userSchema = new Schema({
     required: true,
     select: false,
   },
-  role: {
-    type: String,
-    default: "N/A",
-  },
   sector: {
     type: String,
     required: true,

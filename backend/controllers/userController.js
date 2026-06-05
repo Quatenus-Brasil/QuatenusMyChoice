@@ -13,7 +13,7 @@ const createToken = (_id, rememberMe) => {
 // TODO: Desativar depois e não enviar para produção
 const register = async (request, response) => {
   try {
-    const { active, name, email, password, role, sector, admin, manager } = request.body;
+    const { active, name, email, password, sector, admin, manager } = request.body;
 
     if (typeof active !== "boolean" || !name || !email || !password || !sector || typeof admin !== "boolean" || typeof manager !== "boolean") {
       return response.status(400).json({ success: false, message: "Todos os campos são obrigatórios" });
@@ -24,7 +24,7 @@ const register = async (request, response) => {
       return response.status(400).json({ success: false, message: "Este email já está em uso" });
     }
 
-    const user = await User.create({ active, name, email, password, role, sector, admin, manager });
+    const user = await User.create({ active, name, email, password, sector, admin, manager });
 
     const token = createToken(user._id);
 
@@ -37,7 +37,7 @@ const register = async (request, response) => {
 
 const createUser = async (request, response) => {
   try {
-    const { active, name, email, password, role, sector, admin, manager } = request.body;
+    const { active, name, email, password, sector, admin, manager } = request.body;
 
     if (typeof active !== "boolean" || !name || !email || !password || !sector || typeof admin !== "boolean" || typeof manager !== "boolean") {
       return response.status(400).json({ success: false, message: "Todos os campos são obrigatórios" });
@@ -49,7 +49,7 @@ const createUser = async (request, response) => {
       return response.status(400).json({ success: false, message: "Este email já está em uso" });
     }
 
-    const user = await User.create({ active, name, email, password, role, sector, admin, manager });
+    const user = await User.create({ active, name, email, password, sector, admin, manager });
 
     try {
       await sendWelcomeEmail(email, name, password);
@@ -159,7 +159,7 @@ const editUser = async (request, response) => {
   // 2. Isso ta sendo feito via PUT, eu preciso mesmo colocar TUDO no corpo do usuário? Não posso só passar o que veio?
   // Talvez eu possa fazer igual a edição de item, onde eu pego o que veio e atualizo só o que veio.
   try {
-    const { id, active, name, email, password, role, sector, admin, manager } = request.body;
+    const { id, active, name, email, password, sector, admin, manager } = request.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return response.status(400).json({ success: false, message: "ID de usuário inválido" });
@@ -175,7 +175,7 @@ const editUser = async (request, response) => {
       return response.status(400).json({ success: false, message: "Este email já está em uso por outro usuário" });
     }
 
-    const updatedUser = { active, name, email, role, sector, admin, manager };
+    const updatedUser = { active, name, email, sector, admin, manager };
 
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);

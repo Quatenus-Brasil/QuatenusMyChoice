@@ -33,7 +33,6 @@ const authenticateUser = async (request, response, next) => {
       active: user.active,
       name: user.name,
       email: user.email,
-      role: user.role,
       sector: user.sector,
       admin: user.admin,
       manager: user.manager,
