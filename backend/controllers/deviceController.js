@@ -1,7 +1,6 @@
 import Device from "../models/deviceModel.js";
 import mongoose from "mongoose";
 import fs from "fs";
-import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js";
 
 const cleanupFiles = (files) => {
   if (!files) return;
@@ -30,7 +29,7 @@ const createDevice = async (request, response) => {
       code: request.body.code,
       numericCode: request.body.numericCode,
       desc: request.body.desc,
-      basePrice: convertCurrencyToInt(request.body.basePrice),
+      basePrice: request.body.basePrice,
       itens: parseJsonField(request.body.itens),
       createdBy: request.user._id,
       createdByName: request.user.name,
@@ -58,23 +57,8 @@ const findAllDevices = async (request, response) => {
   try {
     // TODO: Lembrar de desativar o populate do findAll quando for fazer o front
     const allDevices = await Device.find({}).populate("itens.item");
-    const allDevicesWithConvertedPrice = allDevices.map((device) => {
-      const deviceObj = device.toObject();
-      return {
-        ...deviceObj,
-        basePrice: convertIntToCurrency(device.basePrice),
-        itens: deviceObj.itens.map((item) => ({
-          ...item,
-          item: item.item
-            ? {
-                ...item.item,
-                price: convertIntToCurrency(item.item.price),
-              }
-            : null,
-        })),
-      };
-    });
-    return response.status(200).json({ success: true, message: "Todos os dispositivos foram encontrados com sucesso", result: allDevicesWithConvertedPrice });
+
+    return response.status(200).json({ success: true, message: "Todos os dispositivos foram encontrados com sucesso", result: allDevices });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -90,22 +74,7 @@ const findDeviceById = async (request, response) => {
       return response.status(404).json({ success: false, message: "Nenhum dispositivo encontrado" });
     }
 
-    const deviceObj = device.toObject();
-    const deviceWithConvertedPrice = {
-      ...deviceObj,
-      basePrice: convertIntToCurrency(device.basePrice),
-      itens: deviceObj.itens.map((item) => ({
-        ...item,
-        item: item.item
-          ? {
-              ...item.item,
-              price: convertIntToCurrency(item.item.price),
-            }
-          : null,
-      })),
-    };
-
-    return response.status(200).json({ success: true, message: "Dispositivo encontrado com sucesso", result: deviceWithConvertedPrice });
+    return response.status(200).json({ success: true, message: "Dispositivo encontrado com sucesso", result: device });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -173,11 +142,6 @@ const editDevice = async (request, response) => {
       updateData.itens = parseJsonField(device.itens);
     }
 
-    // Só converte o basePrice se ele estiver presente no body
-    if (device.basePrice !== undefined) {
-      updateData.basePrice = convertCurrencyToInt(device.basePrice);
-    }
-
     if (request.files?.banner?.[0]) {
       const existing = await Device.findById(id);
       if (existing?.banner && fs.existsSync(existing.banner)) {
@@ -192,22 +156,7 @@ const editDevice = async (request, response) => {
       return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });
     }
 
-    const deviceObj = updatedDevice.toObject();
-    const deviceWithConvertedPrice = {
-      ...deviceObj,
-      basePrice: convertIntToCurrency(updatedDevice.basePrice),
-      itens: deviceObj.itens.map((item) => ({
-        ...item,
-        item: item.item
-          ? {
-              ...item.item,
-              price: convertIntToCurrency(item.item.price),
-            }
-          : null,
-      })),
-    };
-
-    return response.status(200).json({ success: true, message: "Dispositivo editado", result: deviceWithConvertedPrice });
+    return response.status(200).json({ success: true, message: "Dispositivo editado", result: updatedDevice });
   } catch (error) {
     cleanupFiles(request.files);
     console.log(error);

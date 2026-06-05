@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
-import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js";
 
 const chipSchema = new Schema(
   {

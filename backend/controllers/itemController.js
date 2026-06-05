@@ -1,5 +1,4 @@
 import Item from "../models/itemModel.js";
-import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js";
 import mongoose from "mongoose";
 
 const createItem = async (request, response) => {
@@ -8,7 +7,7 @@ const createItem = async (request, response) => {
       name: request.body.name,
       code: request.body.code,
       desc: request.body.desc,
-      price: convertCurrencyToInt(request.body.price),
+      price: request.body.price,
       createdBy: request.user._id,
       createdByName: request.user.name,
       updatedBy: request.user._id,
@@ -27,11 +26,7 @@ const createItem = async (request, response) => {
 const findAllItems = async (request, response) => {
   try {
     const allItems = await Item.find({});
-    const allItemsWithConvertedPrice = allItems.map(item => ({
-      ...item.toObject(),
-      price: convertIntToCurrency(item.price)
-    }));
-    return response.status(200).json({ success: true, message: "Todos os itens foram encontrados com sucesso", result: allItemsWithConvertedPrice });
+    return response.status(200).json({ success: true, message: "Todos os itens foram encontrados com sucesso", result: allItems });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -48,7 +43,7 @@ const findItemById = async (request, response) => {
       return response.status(404).json({ success: false, message: "Nenhum item encontrado" });
     }
 
-    return response.status(200).json({ success: true, message: "Item encontrado com sucesso", result: { ...item.toObject(), price: convertIntToCurrency(item.price) } });
+    return response.status(200).json({ success: true, message: "Item encontrado com sucesso", result: item });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -76,11 +71,13 @@ const editItem = async (request, response) => {
     const { id } = request.params;
     const item = request.body;
 
-    const updatedItem = await Item.findByIdAndUpdate(
-      id,
-      { ...item, price: convertCurrencyToInt(item.price), updatedBy: request.user._id, updatedByName: request.user.name },
-      { new: true, runValidators: true }
-    );
+    const updateData = {
+      ...item,
+      updatedBy: request.user._id,
+      updatedByName: request.user.name,
+    };
+
+    const updatedItem = await Item.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
 
     if (!updatedItem) {
       return response.status(404).json({ success: false, message: "Item não encontrado" });

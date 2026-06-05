@@ -1,5 +1,4 @@
 import Gama from "../models/gamaModel.js";
-import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js";
 import mongoose from "mongoose";
 
 const createGama = async (request, response) => {
@@ -8,7 +7,7 @@ const createGama = async (request, response) => {
       name: request.body.name,
       code: request.body.code,
       desc: request.body.desc,
-      price: convertCurrencyToInt(request.body.price),
+      price: request.body.price,
       createdBy: request.user._id,
       createdByName: request.user.name,
       updatedBy: request.user._id,
@@ -27,11 +26,8 @@ const createGama = async (request, response) => {
 const findAllGamas = async (request, response) => {
   try {
     const allGamas = await Gama.find({});
-    const allGamasWithConvertedPrice = allGamas.map(gama => ({
-      ...gama.toObject(),
-      price: convertIntToCurrency(gama.price)
-    }));
-    return response.status(200).json({ success: true, message: "Todas as gamas foram encontradas com sucesso", result: allGamasWithConvertedPrice });
+
+    return response.status(200).json({ success: true, message: "Todas as gamas foram encontradas com sucesso", result: allGamas });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -48,7 +44,7 @@ const findGamaById = async (request, response) => {
       return response.status(404).json({ success: false, message: "Nenhuma gama encontrada" });
     }
 
-    return response.status(200).json({ success: true, message: "Gama encontrada com sucesso", result: { ...gama.toObject(), price: convertIntToCurrency(gama.price) } });
+    return response.status(200).json({ success: true, message: "Gama encontrada com sucesso", result: gama });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -76,11 +72,13 @@ const editGama = async (request, response) => {
     const { id } = request.params;
     const gama = request.body;
 
-    const updatedGama = await Gama.findByIdAndUpdate(
-      id,
-      { ...gama, price: convertCurrencyToInt(gama.price), updatedBy: request.user._id, updatedByName: request.user.name },
-      { new: true, runValidators: true }
-    );
+    const updateData = {
+      ...gama,
+      updatedBy: request.user._id,
+      updatedByName: request.user.name,
+    };
+
+    const updatedGama = await Gama.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
 
     if (!updatedGama) {
       return response.status(404).json({ success: false, message: "Gama não encontrada" });

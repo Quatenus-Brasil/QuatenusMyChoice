@@ -1,5 +1,4 @@
 import Chip from "../models/chipModel.js";
-import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js";
 import mongoose from "mongoose";
 
 const createChip = async (request, response) => {
@@ -8,7 +7,7 @@ const createChip = async (request, response) => {
       name: request.body.name,
       code: request.body.code,
       desc: request.body.desc,
-      price: convertCurrencyToInt(request.body.price),
+      price: request.body.price,
       createdBy: request.user._id,
       createdByName: request.user.name,
       updatedBy: request.user._id,
@@ -27,11 +26,8 @@ const createChip = async (request, response) => {
 const findAllChips = async (request, response) => {
   try {
     const allChips = await Chip.find({});
-    const allChipsWithConvertedPrice = allChips.map((chip) => ({
-      ...chip.toObject(),
-      price: convertIntToCurrency(chip.price),
-    }));
-    return response.status(200).json({ success: true, message: "Todos os chips foram encontrados com sucesso", result: allChipsWithConvertedPrice });
+
+    return response.status(200).json({ success: true, message: "Todos os chips foram encontrados com sucesso", result: allChips });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -48,9 +44,7 @@ const findChipById = async (request, response) => {
       return response.status(404).json({ success: false, message: "Nenhum chip encontrado" });
     }
 
-    return response
-      .status(200)
-      .json({ success: true, message: "Chip encontrado com sucesso", result: { ...chip.toObject(), price: convertIntToCurrency(chip.price) } });
+    return response.status(200).json({ success: true, message: "Chip encontrado com sucesso", result: chip });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -78,11 +72,13 @@ const editChip = async (request, response) => {
     const { id } = request.params;
     const chip = request.body;
 
-    const updatedChip = await Chip.findByIdAndUpdate(
-      id,
-      { ...chip, price: convertCurrencyToInt(chip.price), updatedBy: request.user._id, updatedByName: request.user.name },
-      { new: true, runValidators: true },
-    );
+    const updateData = {
+      ...chip,
+      updatedBy: request.user._id,
+      updatedByName: request.user.name,
+    };
+
+    const updatedChip = await Chip.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
 
     if (!updatedChip) {
       return response.status(404).json({ success: false, message: "Chip não encontrado" });

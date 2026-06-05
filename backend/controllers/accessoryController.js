@@ -1,5 +1,4 @@
 import Accessory from "../models/accessoryModel.js";
-import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js"; 
 import mongoose from "mongoose";
 import fs from "fs";
 
@@ -14,7 +13,11 @@ const cleanupFiles = (files) => {
 
 const parseJsonField = (value) => {
   if (typeof value === "string") {
-    try { return JSON.parse(value); } catch { return value; }
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
   }
   return value;
 };
@@ -26,7 +29,7 @@ const createAccessory = async (request, response) => {
       code: request.body.code,
       numericCode: request.body.numericCode,
       desc: request.body.desc,
-      basePrice: convertCurrencyToInt(request.body.basePrice),
+      basePrice: request.body.basePrice,
       itens: parseJsonField(request.body.itens),
       installationService: request.body.installationService,
       createdBy: request.user._id,
@@ -55,25 +58,8 @@ const findAllAccessories = async (request, response) => {
   try {
     // TODO: Lembrar de desativar o populate do findAll quando for fazer o front
     const allAccessories = await Accessory.find({}).populate("itens.item installationService");
-    const allAccessoriesWithConvertedPrice = allAccessories.map(accessory => {
-      const accessoryObj = accessory.toObject();
-      return {
-        ...accessoryObj,
-        basePrice: convertIntToCurrency(accessory.basePrice),
-        itens: accessoryObj.itens.map(item => ({
-          ...item,
-          item: item.item ? {
-            ...item.item,
-            price: convertIntToCurrency(item.item.price)
-          } : null
-        })),
-        installationService: accessoryObj.installationService ? {
-          ...accessoryObj.installationService,
-          price: convertIntToCurrency(accessoryObj.installationService.price)
-        } : null
-      };
-    });
-    return response.status(200).json({ success: true, message: "Todos os acessórios foram encontrados com sucesso", result: allAccessoriesWithConvertedPrice });
+
+    return response.status(200).json({ success: true, message: "Todos os acessórios foram encontrados com sucesso", result: allAccessories });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -90,24 +76,7 @@ const findAccessoryById = async (request, response) => {
       return response.status(404).json({ success: false, message: "Nenhum acessório encontrado" });
     }
 
-    const accessoryObj = accessory.toObject();
-    const accessoryWithConvertedPrice = {
-      ...accessoryObj,
-      basePrice: convertIntToCurrency(accessory.basePrice),
-      itens: accessoryObj.itens.map(item => ({
-        ...item,
-        item: item.item ? {
-          ...item.item,
-          price: convertIntToCurrency(item.item.price)
-        } : null
-      })),
-      installationService: accessoryObj.installationService ? {
-        ...accessoryObj.installationService,
-        price: convertIntToCurrency(accessoryObj.installationService.price)
-      } : null
-    };
-
-    return response.status(200).json({ success: true, message: "Acessório encontrado com sucesso", result: accessoryWithConvertedPrice });
+    return response.status(200).json({ success: true, message: "Acessório encontrado com sucesso", result: accessory });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -168,16 +137,11 @@ const editAccessory = async (request, response) => {
     const updateData = {
       ...accessory,
       updatedBy: request.user._id,
-      updatedByName: request.user.name
+      updatedByName: request.user.name,
     };
 
     if (accessory.itens !== undefined) {
       updateData.itens = parseJsonField(accessory.itens);
-    }
-
-    // Só converte o basePrice se ele estiver presente no body
-    if (accessory.basePrice !== undefined) {
-      updateData.basePrice = convertCurrencyToInt(accessory.basePrice);
     }
 
     if (request.files?.banner?.[0]) {
@@ -188,34 +152,13 @@ const editAccessory = async (request, response) => {
       updateData.banner = request.files.banner[0].path;
     }
 
-    const updatedAccessory = await Accessory.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    ).populate("itens.item installationService");
+    const updatedAccessory = await Accessory.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).populate("itens.item installationService");
 
     if (!updatedAccessory) {
       return response.status(404).json({ success: false, message: "Acessório não encontrado" });
     }
 
-    const accessoryObj = updatedAccessory.toObject();
-    const accessoryWithConvertedPrice = {
-      ...accessoryObj,
-      basePrice: convertIntToCurrency(updatedAccessory.basePrice),
-      itens: accessoryObj.itens.map(item => ({
-        ...item,
-        item: item.item ? {
-          ...item.item,
-          price: convertIntToCurrency(item.item.price)
-        } : null
-      })),
-      installationService: accessoryObj.installationService ? {
-        ...accessoryObj.installationService,
-        price: convertIntToCurrency(accessoryObj.installationService.price)
-      } : null
-    };
-
-    return response.status(200).json({ success: true, message: "Acessório editado", result: accessoryWithConvertedPrice });
+    return response.status(200).json({ success: true, message: "Acessório editado", result: updatedAccessory });
   } catch (error) {
     cleanupFiles(request.files);
     console.log(error);

@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
-import { convertCurrencyToInt, convertIntToCurrency } from "../services/currencyService.js";
 
 const itensSchema = new Schema({
   amount: {
@@ -66,13 +65,13 @@ const deviceSchema = new Schema(
       required: true,
     },
   },
-  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
 // Virtual field para calcular o preço total dinamicamente
 deviceSchema.virtual("price").get(function () {
   if (!this.itens || this.itens.length === 0) {
-    return convertIntToCurrency(this.basePrice);
+    return this.basePrice;
   }
 
   //soma: (amount * item.price) para cada item
@@ -84,7 +83,7 @@ deviceSchema.virtual("price").get(function () {
   }, 0);
 
   const total = this.basePrice + itensTotal;
-  return convertIntToCurrency(total);
+  return total;
 });
 
 const Device = mongoose.model("Device", deviceSchema);
