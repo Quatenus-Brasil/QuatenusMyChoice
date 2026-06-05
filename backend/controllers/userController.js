@@ -102,21 +102,39 @@ const findAllUsers = async (request, response) => {
   }
 };
 
-const deleteUser = async (request, response) => {
+// const deleteUser = async (request, response) => {
+//   try {
+//     const { id } = request.params;
+
+//     const user = await User.findByIdAndDelete(id);
+
+//     if (!user) {
+//       return response.status(404).json({ success: false, message: "Usuário não encontrado" });
+//     }
+
+//     return response.status(200).json({ success: true, message: "Usuário deletado com sucesso", result: user });
+//   } catch (error) {
+//     return response.status(500).json({ success: false, message: error.message });
+//   }
+// };
+
+const inactivateUser = async (request, response) => {
   try {
     const { id } = request.params;
-
-    const user = await User.findByIdAndDelete(id);
+    console.log("ID: ", id);
+    const user = await User.findByIdAndUpdate(id, { active: false }, { returnDocument: "after" });
 
     if (!user) {
       return response.status(404).json({ success: false, message: "Usuário não encontrado" });
     }
 
-    return response.status(200).json({ success: true, message: "Usuário deletado com sucesso", result: user });
+    return response.status(200).json({ success: true, message: "Usuário inativado com sucesso", result: user });
   } catch (error) {
+    console.log(error);
     return response.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 const findUserById = async (request, response) => {
   try {
@@ -195,4 +213,4 @@ const changePassword = async (request, response) => {
   }
 };
 
-export { register, createUser, login, findAllUsers, deleteUser, findUserById, editUser, changePassword };
+export { register, createUser, login, findAllUsers, inactivateUser, findUserById, editUser, changePassword };
