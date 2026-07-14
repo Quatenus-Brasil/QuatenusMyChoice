@@ -44,7 +44,7 @@ const accessorySchema = new Schema(
     itens: [itensSchema],
     installationService: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Item",
+      ref: "AccessoryInstallationCategory",
       required: true,
     },
     banner: {
@@ -85,7 +85,7 @@ accessorySchema.virtual("price").get(function () {
     }
     return total;
   }, 0);
-  const total = this.basePrice + itensTotal;
+  const total = this.basePrice + itensTotal + this.installationService.price;
   return total;
 });
 
