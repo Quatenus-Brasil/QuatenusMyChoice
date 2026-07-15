@@ -28,11 +28,6 @@ const deviceSchema = new Schema(
       required: true,
       unique: true,
     },
-    numericCode: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     desc: {
       type: String,
       required: true,

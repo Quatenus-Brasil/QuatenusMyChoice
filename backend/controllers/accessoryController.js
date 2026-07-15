@@ -6,7 +6,6 @@ const createAccessory = async (request, response) => {
     const newAccessory = {
       name: request.body.name,
       code: request.body.code,
-      numericCode: request.body.numericCode,
       desc: request.body.desc,
       basePrice: request.body.basePrice,
       itens: request.body.itens,
