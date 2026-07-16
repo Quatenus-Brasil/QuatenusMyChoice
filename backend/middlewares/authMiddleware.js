@@ -28,6 +28,13 @@ const authenticateUser = async (request, response, next) => {
       return response.status(404).json({ success: false, message: "Usuário não encontrado" });
     }
 
+    const tokenVersion = Number(decoded.tokenVersion ?? 0);
+    const userTokenVersion = Number(user.tokenVersion ?? 0);
+
+    if (tokenVersion !== userTokenVersion) {
+      return response.status(401).json({ success: false, message: "Token inválido ou sessão expirada" });
+    }
+
     request.user = {
       _id: user._id.toString(),
       active: user.active,

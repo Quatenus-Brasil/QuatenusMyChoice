@@ -36,6 +36,11 @@ const userSchema = new Schema({
     required: true,
     default: false,
   },
+  tokenVersion: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
 });
 
 userSchema.pre("save", async function () {

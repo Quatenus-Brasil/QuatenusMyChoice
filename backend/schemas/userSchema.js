@@ -16,7 +16,7 @@ const editUserSchema = createUserSchema.partial();
 
 const changePasswordSchema = z
   .object({
-    // currentPassword: z.string().trim().min(6, "Senha atual deve ter no mínimo 6 caracteres"),
+    currentPassword: z.string("Senha atual é obrigatória"),
     newPassword: z.string().trim().min(6, "Nova senha deve ter no mínimo 6 caracteres"),
   })
   .strict();

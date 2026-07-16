@@ -4,8 +4,8 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { sendWelcomeEmail } from "../services/emailService.js";
 
-const createToken = (_id, rememberMe) => {
-  return jwt.sign({ _id }, process.env.SECRET_JWT, {
+const createToken = (_id, rememberMe, tokenVersion = 0) => {
+  return jwt.sign({ _id, tokenVersion }, process.env.SECRET_JWT, {
     expiresIn: rememberMe ? "30d" : "3d",
   });
 };
@@ -25,8 +25,6 @@ const register = async (request, response) => {
     }
 
     const user = await User.create({ active, name, email, password, sector, admin, manager });
-
-    const token = createToken(user._id);
 
     return response.status(201).json({ success: true, message: "Usuário registrado com sucesso", result: token });
   } catch (error) {
@@ -87,7 +85,7 @@ const login = async (request, response) => {
       return response.status(401).json({ success: false, message: "Credenciais inválidas" });
     }
 
-    const token = createToken(user._id, rememberMe);
+    const token = createToken(user._id, rememberMe, user.tokenVersion);
 
     return response.status(200).json({ success: true, message: "Usuário logado com sucesso", result: token });
   } catch (error) {
@@ -126,7 +124,7 @@ const inactivateUser = async (request, response) => {
   try {
     const { id } = request.params;
     console.log("ID: ", id);
-    const user = await User.findByIdAndUpdate(id, { active: false }, { returnDocument: "after" });
+    const user = await User.findByIdAndUpdate(id, { $set: { active: false }, $inc: { tokenVersion: 1 } }, { returnDocument: "after" });
 
     if (!user) {
       return response.status(404).json({ success: false, message: "Usuário não encontrado" });
@@ -179,13 +177,19 @@ const editUser = async (request, response) => {
     }
 
     const updatedUser = { active, name, email, sector, admin, manager };
+    const updateOperation = { $set: updatedUser };
 
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
-      updatedUser.password = hashedPassword;
+      updateOperation.$set.password = hashedPassword;
+      updateOperation.$inc = { tokenVersion: 1 };
     }
 
-    const user = await User.findByIdAndUpdate(id, updatedUser, { returnDocument: "after", runValidators: true });
+    const user = await User.findByIdAndUpdate(id, updateOperation, { returnDocument: "after", runValidators: true });
+
+    if (!user) {
+      return response.status(404).json({ success: false, message: "Usuário não encontrado" });
+    }
 
     return response.status(200).json({ success: true, message: "Usuário atualizado com sucesso", result: user });
   } catch (error) {
@@ -197,17 +201,26 @@ const editUser = async (request, response) => {
 const changePassword = async (request, response) => {
   try {
     const id = request.user._id;
-    const { newPassword } = request.body;
+    const { currentPassword, newPassword } = request.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return response.status(400).json({ success: false, message: "ID de usuário inválido" });
     }
 
-    if (!newPassword) {
-      return response.status(400).json({ success: false, message: "A nova senha é obrigatória" });
+    const user = await User.findById(id).select("+password");
+
+    if (!user) {
+      return response.status(404).json({ success: false, message: "Usuário não encontrado" });
     }
+
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!passwordMatch) {
+      return response.status(401).json({ success: false, message: "Senha atual incorreta" });
+    }
+
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await User.findByIdAndUpdate(id, { password: hashedPassword });
+    await User.findByIdAndUpdate(id, { $set: { password: hashedPassword }, $inc: { tokenVersion: 1 } });
 
     return response.status(200).json({ success: true, message: "Senha alterada com sucesso" });
   } catch (error) {
