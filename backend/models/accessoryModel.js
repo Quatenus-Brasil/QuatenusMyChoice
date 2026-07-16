@@ -9,6 +9,7 @@ const itensSchema = new Schema({
   unit: {
     type: String,
     required: true,
+    enum: ["un", "cm", "m", "kit", "sv"],
   },
   item: {
     type: mongoose.Schema.Types.ObjectId,
