@@ -27,8 +27,7 @@ const createDevice = async (request, response) => {
 
 const findAllDevices = async (request, response) => {
   try {
-    // TODO: Lembrar de desativar o populate do findAll quando for fazer o front
-    const allDevices = await Device.find({}).populate("itens.item");
+    const allDevices = await Device.find({}).populate("itens.item", "name code desc");
 
     return response.status(200).json({ success: true, message: "Todos os dispositivos foram encontrados com sucesso", result: allDevices });
   } catch (error) {

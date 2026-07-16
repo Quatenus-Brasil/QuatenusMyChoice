@@ -28,8 +28,7 @@ const createAccessory = async (request, response) => {
 
 const findAllAccessories = async (request, response) => {
   try {
-    // TODO: Lembrar de desativar o populate do findAll quando for fazer o front
-    const allAccessories = await Accessory.find({}).populate("itens.item installationService");
+    const allAccessories = await Accessory.find({}).populate("itens.item", "name code desc");
 
     return response.status(200).json({ success: true, message: "Todos os acessórios foram encontrados com sucesso", result: allAccessories });
   } catch (error) {
