@@ -7,7 +7,6 @@ const createGama = async (request, response) => {
       name: request.body.name,
       code: request.body.code,
       desc: request.body.desc,
-      price: request.body.price,
       createdBy: request.user._id,
       updatedBy: request.user._id,
     };

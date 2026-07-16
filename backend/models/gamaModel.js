@@ -15,10 +15,6 @@ const gamaSchema = new Schema(
     desc: {
       type: String,
     },
-    price: {
-      type: Number,
-      required: true,
-    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -30,7 +26,7 @@ const gamaSchema = new Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Gama = mongoose.model("Gama", gamaSchema);
