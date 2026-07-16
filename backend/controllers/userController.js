@@ -37,24 +37,28 @@ const register = async (request, response) => {
 
 const createUser = async (request, response) => {
   try {
-    const { active, name, email, password, sector, admin, manager } = request.body;
+    const newUser = {
+      active: request.body.active,
+      name: request.body.name,
+      email: request.body.email,
+      password: request.body.password,
+      sector: request.body.sector,
+      admin: request.body.admin,
+      manager: request.body.manager,
+    };
 
-    if (typeof active !== "boolean" || !name || !email || !password || !sector || typeof admin !== "boolean" || typeof manager !== "boolean") {
-      return response.status(400).json({ success: false, message: "Todos os campos são obrigatórios" });
-    }
-
-    const alreadyExists = await User.findOne({ email });
+    const alreadyExists = await User.findOne({ email: newUser.email });
 
     if (alreadyExists) {
       return response.status(400).json({ success: false, message: "Este email já está em uso" });
     }
 
-    const user = await User.create({ active, name, email, password, sector, admin, manager });
+    const user = await User.create(newUser);
 
     try {
-      await sendWelcomeEmail(email, name, password);
+      await sendWelcomeEmail(newUser.email, newUser.name, newUser.password);
     } catch (error) {
-      console.error("Erro ao enviar email de boas-vindas:", error);
+      console.error("Erro ao enviar email:", error.response?.data?.message || error.message);
     }
 
     return response.status(201).json({ success: true, message: "Usuário registrado com sucesso", result: user });

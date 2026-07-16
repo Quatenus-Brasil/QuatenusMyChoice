@@ -14,14 +14,14 @@ const sendEmail = async (to, name, subject, content) => {
   };
 
   try {
-    axios.post(URL, emailData, {
+    await axios.post(URL, emailData, {
       headers: {
         "Content-Type": "application/json",
         "api-key": process.env.BREVO_API_KEY,
       },
     });
   } catch (error) {
-    console.error("Erro ao enviar email:", error);
+    // console.error("Erro ao enviar email:", error.response?.data || error.message);
     throw error;
   }
 };
