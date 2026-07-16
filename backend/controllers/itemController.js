@@ -67,10 +67,9 @@ const deleteItem = async (request, response) => {
 const editItem = async (request, response) => {
   try {
     const { id } = request.params;
-    const item = request.body;
 
     const updateData = {
-      ...item,
+      ...request.body,
       updatedBy: request.user._id,
     };
 
