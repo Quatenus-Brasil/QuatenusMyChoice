@@ -85,7 +85,7 @@ const editAccessory = async (request, response) => {
       updatedBy: request.user._id,
     };
 
-    const updatedAccessory = await Accessory.findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
+    const updatedAccessory = await Accessory.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true })
       .populate("itens.item")
       .populate("installationService")
       .populate("createdBy", "name email")

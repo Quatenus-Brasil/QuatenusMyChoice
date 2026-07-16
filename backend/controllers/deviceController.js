@@ -79,7 +79,7 @@ const editDevice = async (request, response) => {
       updatedBy: request.user._id,
     };
 
-    const updatedDevice = await Device.findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
+    const updatedDevice = await Device.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true })
       .populate("itens.item")
       .populate("createdBy", "name email")
       .populate("updatedBy", "name email");

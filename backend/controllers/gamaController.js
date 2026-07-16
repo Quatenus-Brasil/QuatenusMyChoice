@@ -74,7 +74,7 @@ const editGama = async (request, response) => {
       updatedBy: request.user._id,
     };
 
-    const updatedGama = await Gama.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    const updatedGama = await Gama.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true });
 
     if (!updatedGama) {
       return response.status(404).json({ success: false, message: "Gama não encontrada" });

@@ -135,7 +135,6 @@ const inactivateUser = async (request, response) => {
   }
 };
 
-
 const findUserById = async (request, response) => {
   try {
     const { id } = request.params;
@@ -182,7 +181,7 @@ const editUser = async (request, response) => {
       updatedUser.password = hashedPassword;
     }
 
-    const user = await User.findByIdAndUpdate(id, updatedUser, { new: true });
+    const user = await User.findByIdAndUpdate(id, updatedUser, { returnDocument: "after", runValidators: true });
 
     return response.status(200).json({ success: true, message: "Usuário atualizado com sucesso", result: user });
   } catch (error) {

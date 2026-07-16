@@ -75,7 +75,7 @@ const editChip = async (request, response) => {
       updatedBy: request.user._id,
     };
 
-    const updatedChip = await Chip.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    const updatedChip = await Chip.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true });
 
     if (!updatedChip) {
       return response.status(404).json({ success: false, message: "Chip não encontrado" });

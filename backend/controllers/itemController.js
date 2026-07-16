@@ -74,7 +74,7 @@ const editItem = async (request, response) => {
       updatedBy: request.user._id,
     };
 
-    const updatedItem = await Item.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    const updatedItem = await Item.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true });
 
     if (!updatedItem) {
       return response.status(404).json({ success: false, message: "Item não encontrado" });

@@ -74,7 +74,7 @@ const editAccessoryInstallationCategory = async (request, response) => {
       updatedBy: request.user._id,
     };
 
-    const updatedAccessoryInstallationCategory = await AccessoryInstallationCategory.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    const updatedAccessoryInstallationCategory = await AccessoryInstallationCategory.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true });
 
     if (!updatedAccessoryInstallationCategory) {
       return response.status(404).json({ success: false, message: "Categoria de instalação de acessório não encontrada" });
