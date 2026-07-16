@@ -10,29 +10,6 @@ const createToken = (_id, rememberMe, tokenVersion = 0) => {
   });
 };
 
-// TODO: Desativar depois e não enviar para produção
-const register = async (request, response) => {
-  try {
-    const { active, name, email, password, sector, admin, manager } = request.body;
-
-    if (typeof active !== "boolean" || !name || !email || !password || !sector || typeof admin !== "boolean" || typeof manager !== "boolean") {
-      return response.status(400).json({ success: false, message: "Todos os campos são obrigatórios" });
-    }
-
-    const alreadyExists = await User.findOne({ email });
-    if (alreadyExists) {
-      return response.status(400).json({ success: false, message: "Este email já está em uso" });
-    }
-
-    const user = await User.create({ active, name, email, password, sector, admin, manager });
-
-    return response.status(201).json({ success: true, message: "Usuário registrado com sucesso", result: token });
-  } catch (error) {
-    console.log(error);
-    return response.status(500).json({ success: false, message: error.message });
-  }
-};
-
 const createUser = async (request, response) => {
   try {
     const newUser = {
@@ -103,22 +80,6 @@ const findAllUsers = async (request, response) => {
     return response.status(500).json({ success: false, message: error.message });
   }
 };
-
-// const deleteUser = async (request, response) => {
-//   try {
-//     const { id } = request.params;
-
-//     const user = await User.findByIdAndDelete(id);
-
-//     if (!user) {
-//       return response.status(404).json({ success: false, message: "Usuário não encontrado" });
-//     }
-
-//     return response.status(200).json({ success: true, message: "Usuário deletado com sucesso", result: user });
-//   } catch (error) {
-//     return response.status(500).json({ success: false, message: error.message });
-//   }
-// };
 
 const inactivateUser = async (request, response) => {
   try {
@@ -229,4 +190,4 @@ const changePassword = async (request, response) => {
   }
 };
 
-export { register, createUser, login, findAllUsers, inactivateUser, findUserById, editUser, changePassword };
+export { createUser, login, findAllUsers, inactivateUser, findUserById, editUser, changePassword };
