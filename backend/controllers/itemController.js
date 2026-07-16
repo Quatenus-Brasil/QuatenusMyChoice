@@ -9,9 +9,7 @@ const createItem = async (request, response) => {
       desc: request.body.desc,
       price: request.body.price,
       createdBy: request.user._id,
-      createdByName: request.user.name,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const item = await Item.create(newItem);
@@ -37,7 +35,7 @@ const findItemById = async (request, response) => {
   try {
     const { id } = request.params;
 
-    const item = await Item.findById(id);
+    const item = await Item.findById(id).populate("createdBy", "name email").populate("updatedBy", "name email");
 
     if (!item) {
       return response.status(404).json({ success: false, message: "Nenhum item encontrado" });
@@ -74,7 +72,6 @@ const editItem = async (request, response) => {
     const updateData = {
       ...item,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const updatedItem = await Item.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });

@@ -11,9 +11,7 @@ const createDevice = async (request, response) => {
       itens: request.body.itens,
       banner: request.body.banner,
       createdBy: request.user._id,
-      createdByName: request.user.name,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const device = await Device.create(newDevice);
@@ -43,7 +41,7 @@ const findDeviceById = async (request, response) => {
   try {
     const { id } = request.params;
 
-    const device = await Device.findById(id).populate("itens.item");
+    const device = await Device.findById(id).populate("itens.item").populate("createdBy", "name email").populate("updatedBy", "name email");
     if (!device) {
       return response.status(404).json({ success: false, message: "Nenhum dispositivo encontrado" });
     }
@@ -79,10 +77,12 @@ const editDevice = async (request, response) => {
     const updateData = {
       ...device,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
-    const updatedDevice = await Device.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).populate("itens.item");
+    const updatedDevice = await Device.findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
+      .populate("itens.item")
+      .populate("createdBy", "name email")
+      .populate("updatedBy", "name email");
 
     if (!updatedDevice) {
       return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });

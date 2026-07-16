@@ -8,9 +8,7 @@ const createAccessoryInstallationCategory = async (request, response) => {
       code: request.body.code,
       price: request.body.price,
       createdBy: request.user._id,
-      createdByName: request.user.name,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const accessoryInstallationCategory = await AccessoryInstallationCategory.create(newAccessoryInstallationCategory);
@@ -37,7 +35,7 @@ const findAccessoryInstallationCategoryById = async (request, response) => {
   try {
     const { id } = request.params;
 
-    const accessoryInstallationCategory = await AccessoryInstallationCategory.findById(id);
+    const accessoryInstallationCategory = await AccessoryInstallationCategory.findById(id).populate("createdBy", "name email").populate("updatedBy", "name email");
 
     if (!accessoryInstallationCategory) {
       return response.status(404).json({ success: false, message: "Nenhuma categoria de instalação de acessório encontrada" });
@@ -74,7 +72,6 @@ const editAccessoryInstallationCategory = async (request, response) => {
     const updateData = {
       ...accessoryInstallationCategory,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const updatedAccessoryInstallationCategory = await AccessoryInstallationCategory.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });

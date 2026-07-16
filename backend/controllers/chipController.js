@@ -9,9 +9,7 @@ const createChip = async (request, response) => {
       desc: request.body.desc,
       price: request.body.price,
       createdBy: request.user._id,
-      createdByName: request.user.name,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const chip = await Chip.create(newChip);
@@ -38,7 +36,7 @@ const findChipById = async (request, response) => {
   try {
     const { id } = request.params;
 
-    const chip = await Chip.findById(id);
+    const chip = await Chip.findById(id).populate("createdBy", "name email").populate("updatedBy", "name email");
 
     if (!chip) {
       return response.status(404).json({ success: false, message: "Nenhum chip encontrado" });
@@ -75,7 +73,6 @@ const editChip = async (request, response) => {
     const updateData = {
       ...chip,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const updatedChip = await Chip.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });

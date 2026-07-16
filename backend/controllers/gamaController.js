@@ -9,9 +9,7 @@ const createGama = async (request, response) => {
       desc: request.body.desc,
       price: request.body.price,
       createdBy: request.user._id,
-      createdByName: request.user.name,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const gama = await Gama.create(newGama);
@@ -38,7 +36,7 @@ const findGamaById = async (request, response) => {
   try {
     const { id } = request.params;
 
-    const gama = await Gama.findById(id);
+    const gama = await Gama.findById(id).populate("createdBy", "name email").populate("updatedBy", "name email");
 
     if (!gama) {
       return response.status(404).json({ success: false, message: "Nenhuma gama encontrada" });
@@ -75,7 +73,6 @@ const editGama = async (request, response) => {
     const updateData = {
       ...gama,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const updatedGama = await Gama.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });

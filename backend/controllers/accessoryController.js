@@ -12,9 +12,7 @@ const createAccessory = async (request, response) => {
       installationService: request.body.installationService,
       banner: request.body.banner,
       createdBy: request.user._id,
-      createdByName: request.user.name,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
     const accessory = await Accessory.create(newAccessory);
@@ -44,7 +42,11 @@ const findAccessoryById = async (request, response) => {
   try {
     const { id } = request.params;
 
-    const accessory = await Accessory.findById(id).populate("itens.item installationService");
+    const accessory = await Accessory.findById(id)
+      .populate("itens.item")
+      .populate("installationService")
+      .populate("createdBy", "name email")
+      .populate("updatedBy", "name email");
 
     if (!accessory) {
       return response.status(404).json({ success: false, message: "Nenhum acessório encontrado" });
@@ -81,10 +83,13 @@ const editAccessory = async (request, response) => {
     const updateData = {
       ...accessory,
       updatedBy: request.user._id,
-      updatedByName: request.user.name,
     };
 
-    const updatedAccessory = await Accessory.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).populate("itens.item installationService");
+    const updatedAccessory = await Accessory.findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
+      .populate("itens.item")
+      .populate("installationService")
+      .populate("createdBy", "name email")
+      .populate("updatedBy", "name email");
 
     if (!updatedAccessory) {
       return response.status(404).json({ success: false, message: "Acessório não encontrado" });
