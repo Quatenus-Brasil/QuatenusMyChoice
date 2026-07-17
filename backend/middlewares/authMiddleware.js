@@ -103,18 +103,6 @@ const authorizedSectors = (...allowedSectors) => {
     }
     next();
   };
-  // 01 Direção
-  // 02 Marketing
-  // 03 Vendas
-  // 04 Recursos Humanos
-  // 05 Compras
-  // 06 Suporte & Operações
-  // 07 Logística
-  // 08 Infraestrutura
-  // 09 Qualidade
-  // 10 Financeiro
-  // 11 Customer Success
-  // 12 Parcerias e Inovação
 };
 
 export { authenticateUser, isAdmin, isManager, authorizedSectors };

@@ -12,7 +12,9 @@ const createUserSchema = z
   })
   .strict(); 
 
-const editUserSchema = createUserSchema.partial();
+const editUserSchema = createUserSchema.partial().refine((data) => Object.keys(data).length > 0, {
+  message: "Pelo menos um campo deve ser fornecido para atualização",
+});
 
 const changePasswordSchema = z
   .object({

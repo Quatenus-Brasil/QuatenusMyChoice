@@ -84,7 +84,7 @@ const findAllUsers = async (request, response) => {
 const inactivateUser = async (request, response) => {
   try {
     const { id } = request.params;
-    console.log("ID: ", id);
+
     const user = await User.findByIdAndUpdate(id, { $set: { active: false }, $inc: { tokenVersion: 1 } }, { returnDocument: "after" });
 
     if (!user) {
@@ -115,33 +115,22 @@ const findUserById = async (request, response) => {
 };
 
 const editUser = async (request, response) => {
-  // TODO: Revisar essa função:
-  // 1. Eu não sei dizer se isso aqui é a forma correta de atualizar o usuário.
-  // Essa rota é para o admin/manager atualizar qualquer usuário, então o ID vai no corpo ou no params?
-  // 2. Isso ta sendo feito via PUT, eu preciso mesmo colocar TUDO no corpo do usuário? Não posso só passar o que veio?
-  // Talvez eu possa fazer igual a edição de item, onde eu pego o que veio e atualizo só o que veio.
   try {
-    const { id, active, name, email, password, sector, admin, manager } = request.body;
+    const { id } = request.params;
+    const updateData = { ...request.body };
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return response.status(400).json({ success: false, message: "ID de usuário inválido" });
+    if (updateData.email) {
+      const alreadyExists = await User.findOne({ email: updateData.email });
+      
+      if (alreadyExists && alreadyExists._id.toString() !== id) {
+        return response.status(400).json({ success: false, message: "Este email já está em uso por outro usuário" });
+      }
     }
 
-    if (typeof active !== "boolean" || !name || !email || !sector || typeof admin !== "boolean" || typeof manager !== "boolean") {
-      return response.status(400).json({ success: false, message: "Todos os campos são obrigatórios" });
-    }
+    const updateOperation = { $set: updateData };
 
-    const alreadyExists = await User.findOne({ email });
-
-    if (alreadyExists && alreadyExists._id.toString() !== id) {
-      return response.status(400).json({ success: false, message: "Este email já está em uso por outro usuário" });
-    }
-
-    const updatedUser = { active, name, email, sector, admin, manager };
-    const updateOperation = { $set: updatedUser };
-
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
+    if (updateData.password) {
+      const hashedPassword = await bcrypt.hash(updateData.password, 10);
       updateOperation.$set.password = hashedPassword;
       updateOperation.$inc = { tokenVersion: 1 };
     }

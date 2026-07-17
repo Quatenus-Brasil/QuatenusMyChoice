@@ -10,9 +10,9 @@ const router = express.Router();
 router.post("/create", authenticateUser, isAdmin, validate(createUserSchema), createUser);
 router.post("/login", login);
 router.get("/", authenticateUser, isManager, findAllUsers);
-router.patch("/inactivate/:id", authenticateUser, isManager, validId, inactivateUser);
+router.patch("/inactivate/:id", authenticateUser, isAdmin, validId, inactivateUser);
 router.get("/:id", authenticateUser, validId, findUserById);
-router.put("/edit", authenticateUser, isManager, validate(editUserSchema), editUser);
+router.patch("/edit/:id", authenticateUser, isAdmin, validId, validate(editUserSchema), editUser);
 router.patch("/change-password", authenticateUser, validate(changePasswordSchema), changePassword);
 
 export default router;

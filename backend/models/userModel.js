@@ -25,6 +25,21 @@ const userSchema = new Schema({
   sector: {
     type: String,
     required: true,
+    enum: [
+      "Direção",
+      "Marketing",
+      "Vendas",
+      "Recursos Humanos",
+      "Compras",
+      "Suporte & Operações",
+      "Logística",
+      "Infraestrutura",
+      "Qualidade",
+      "Financeiro",
+      "Customer Success",
+      "Parcerias e Inovação",
+      "Desenvolvimento"
+    ],
   },
   admin: {
     type: Boolean,
