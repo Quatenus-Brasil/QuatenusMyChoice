@@ -54,7 +54,7 @@ const login = async (request, response) => {
     }
 
     if (user.active === false) {
-      return response.status(403).json({ success: false, message: "Usuário inativo. Fale com um gerente ou administrador." });
+      return response.status(403).json({ success: false, message: "Usuário inativo" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
