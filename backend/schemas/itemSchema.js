@@ -9,6 +9,8 @@ const createItemSchema = z
   })
   .strict(); 
 
-const editItemSchema = createItemSchema.partial();
+const editItemSchema = createItemSchema.partial().refine((data) => Object.keys(data).length > 0, {
+  message: "Pelo menos um campo deve ser fornecido para atualização",
+});
 
 export { createItemSchema, editItemSchema };
