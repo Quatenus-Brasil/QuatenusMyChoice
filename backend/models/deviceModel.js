@@ -36,8 +36,13 @@ const deviceSchema = new Schema(
     basePrice: {
       type: Number,
       required: true,
+      default: 0,
     },
-    itens: [itensSchema],
+    itens: {
+      type: [itensSchema],
+      default: [],
+      required: true,
+    },
     banner: {
       type: String,
       default: null,
