@@ -4,7 +4,7 @@ const createGamaSchema = z
   .object({
     name: z.string().trim().min(1, "Nome é obrigatório"),
     code: z.string().trim().min(1, "Código é obrigatório"),
-    desc: z.string().trim().optional(),
+    desc: z.string().trim().min(1, "Descrição é obrigatória"),
   })
   .strict();
 
