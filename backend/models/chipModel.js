@@ -31,7 +31,7 @@ const chipSchema = new Schema(
       required: true,
     },
   },
-  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  { timestamps: true }
 );
 
 const Chip = mongoose.model("Chip", chipSchema);
