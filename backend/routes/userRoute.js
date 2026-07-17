@@ -13,6 +13,6 @@ router.get("/", authenticateUser, isManager, findAllUsers);
 router.patch("/inactivate/:id", authenticateUser, isManager, validId, inactivateUser);
 router.get("/:id", authenticateUser, validId, findUserById);
 router.put("/edit", authenticateUser, isManager, validate(editUserSchema), editUser);
-router.patch("/changePassword", authenticateUser, validate(changePasswordSchema), changePassword);
+router.patch("/change-password", authenticateUser, validate(changePasswordSchema), changePassword);
 
 export default router;
