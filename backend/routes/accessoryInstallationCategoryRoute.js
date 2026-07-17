@@ -15,6 +15,6 @@ router.post("/", authenticateUser, isManager, authorizedSectors("Suporte & Opera
 router.get("/", authenticateUser, findAllAccessoryInstallationCategories);
 router.get("/:id", authenticateUser, validId, findAccessoryInstallationCategoryById);
 router.delete("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), deleteAccessoryInstallationCategory);
-router.put("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editAccessoryInstallationCategory);
+router.patch("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editAccessoryInstallationCategory);
 
 export default router;
