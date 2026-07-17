@@ -9,6 +9,6 @@ router.post("/", authenticateUser, isManager, authorizedSectors("Suporte & Opera
 router.get("/", authenticateUser, findAllGamas);
 router.get("/:id", authenticateUser, validId, findGamaById);
 router.delete("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), deleteGama);
-router.put("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editGama);
+router.patch("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editGama);
 
 export default router;

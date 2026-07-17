@@ -86,10 +86,6 @@ const editAccessory = async (request, response) => {
     };
 
     const updatedAccessory = await Accessory.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true })
-      .populate("itens.item")
-      .populate("installationService")
-      .populate("createdBy", "name email")
-      .populate("updatedBy", "name email");
 
     if (!updatedAccessory) {
       return response.status(404).json({ success: false, message: "Acessório não encontrado" });

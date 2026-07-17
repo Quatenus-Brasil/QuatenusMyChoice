@@ -9,6 +9,6 @@ router.post("/", authenticateUser, isManager, authorizedSectors("Suporte & Opera
 router.get("/", authenticateUser, findAllAccessories);
 router.get("/:id", authenticateUser, validId, findAccessoryById);
 router.delete("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), deleteAccessory);
-router.put("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editAccessory);
+router.patch("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editAccessory);
 
 export default router;

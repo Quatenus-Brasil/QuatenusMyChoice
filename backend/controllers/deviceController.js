@@ -80,9 +80,6 @@ const editDevice = async (request, response) => {
     };
 
     const updatedDevice = await Device.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true })
-      .populate("itens.item")
-      .populate("createdBy", "name email")
-      .populate("updatedBy", "name email");
 
     if (!updatedDevice) {
       return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });

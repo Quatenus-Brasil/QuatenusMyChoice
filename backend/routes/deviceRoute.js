@@ -9,6 +9,6 @@ router.post("/", authenticateUser, isManager, authorizedSectors("Suporte & Opera
 router.get("/", authenticateUser, findAllDevices);
 router.get("/:id", authenticateUser, validId, findDeviceById);
 router.delete("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), deleteDevice);
-router.put("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editDevice);
+router.patch("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editDevice);
 
 export default router;

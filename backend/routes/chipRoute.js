@@ -9,6 +9,6 @@ router.post("/", authenticateUser, isManager, authorizedSectors("Suporte & Opera
 router.get("/", authenticateUser, findAllChips);
 router.get("/:id", authenticateUser, validId, findChipById);
 router.delete("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), deleteChip);
-router.put("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editChip);
+router.patch("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), editChip);
 
 export default router;
