@@ -68,10 +68,9 @@ const deleteChip = async (request, response) => {
 const editChip = async (request, response) => {
   try {
     const { id } = request.params;
-    const chip = request.body;
 
     const updateData = {
-      ...chip,
+      ...request.body,
       updatedBy: request.user._id,
     };
 

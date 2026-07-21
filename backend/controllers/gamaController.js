@@ -67,10 +67,9 @@ const deleteGama = async (request, response) => {
 const editGama = async (request, response) => {
   try {
     const { id } = request.params;
-    const gama = request.body;
 
     const updateData = {
-      ...gama,
+      ...request.body,
       updatedBy: request.user._id,
     };
 

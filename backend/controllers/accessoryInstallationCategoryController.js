@@ -67,10 +67,9 @@ const deleteAccessoryInstallationCategory = async (request, response) => {
 const editAccessoryInstallationCategory = async (request, response) => {
   try {
     const { id } = request.params;
-    const accessoryInstallationCategory = request.body;
 
     const updateData = {
-      ...accessoryInstallationCategory,
+      ...request.body,
       updatedBy: request.user._id,
     };
 

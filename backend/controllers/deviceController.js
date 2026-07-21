@@ -72,10 +72,9 @@ const deleteDevice = async (request, response) => {
 const editDevice = async (request, response) => {
   try {
     const { id } = request.params;
-    const device = request.body;
 
     const updateData = {
-      ...device,
+      ...request.body,
       updatedBy: request.user._id,
     };
 

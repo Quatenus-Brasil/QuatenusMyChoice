@@ -78,10 +78,9 @@ const deleteAccessory = async (request, response) => {
 const editAccessory = async (request, response) => {
   try {
     const { id } = request.params;
-    const accessory = request.body;
 
     const updateData = {
-      ...accessory,
+      ...request.bod,
       updatedBy: request.user._id,
     };
 
