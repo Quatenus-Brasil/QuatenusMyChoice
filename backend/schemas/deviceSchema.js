@@ -5,7 +5,7 @@ const createDeviceSchema = z
     name: z.string().trim().min(1, "Nome é obrigatório"),
     code: z.string().trim().min(1, "Código é obrigatório"),
     desc: z.string().trim().min(1, "Descrição é obrigatória"),
-    observation: z.string().trim().nullable().optional(),
+    observation: z.string().trim().nullable(),
     basePrice: z.number().positive("Preço deve ser maior que zero"),
     itens: z.array(
       z.object({
@@ -14,7 +14,7 @@ const createDeviceSchema = z
         item: z.string().trim().min(1, "Item é obrigatório"),
       }),
     ),
-    banner: z.string().trim().optional(),
+    banner: z.string().trim().nullable(),
   })
   .strict();
 
