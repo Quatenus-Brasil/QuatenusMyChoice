@@ -33,6 +33,10 @@ const accessorySchema = new Schema(
       type: String,
       required: true,
     },
+    observation: {
+      type: String,
+      default: null,
+    },
     basePrice: {
       type: Number,
       required: true,

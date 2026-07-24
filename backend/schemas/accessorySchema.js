@@ -5,6 +5,7 @@ const createAccessorySchema = z
     name: z.string().trim().min(1, "Nome é obrigatório"),
     code: z.string().trim().min(1, "Código é obrigatório"),
     desc: z.string().trim().min(1, "Descrição é obrigatória"),
+    observation: z.string().trim().nullable().optional(),
     basePrice: z.number().positive("Preço deve ser maior que zero"),
     itens: z.array(
       z.object({

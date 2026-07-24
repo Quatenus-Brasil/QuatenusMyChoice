@@ -7,6 +7,7 @@ const createAccessory = async (request, response) => {
       name: request.body.name,
       code: request.body.code,
       desc: request.body.desc,
+      observation: request.body.observation,
       basePrice: request.body.basePrice,
       itens: request.body.itens,
       installationService: request.body.installationService,
@@ -80,7 +81,7 @@ const editAccessory = async (request, response) => {
     const { id } = request.params;
 
     const updateData = {
-      ...request.bod,
+      ...request.body,
       updatedBy: request.user._id,
     };
 
