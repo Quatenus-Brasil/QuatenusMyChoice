@@ -7,6 +7,7 @@ const createDevice = async (request, response) => {
       name: request.body.name,
       code: request.body.code,
       desc: request.body.desc,
+      observation: request.body.observation,
       basePrice: request.body.basePrice,
       itens: request.body.itens,
       banner: request.body.banner,
