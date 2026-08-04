@@ -37,11 +37,11 @@ const accessorySchema = new Schema(
       type: String,
       default: null,
     },
-    basePrice: {
-      type: Number,
+    itens: {
+      type: [itensSchema],
+      default: [],
       required: true,
     },
-    itens: [itensSchema],
     installationService: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "AccessoryInstallationCategory",
@@ -67,17 +67,15 @@ const accessorySchema = new Schema(
 
 // Virtual field para calcular o preço total dinamicamente
 accessorySchema.virtual("price").get(function () {
-  if (!this.itens || this.itens.length === 0) {
-    return this.basePrice;
-  }
-
+   //soma: (amount * item.price) para cada item
   const itensTotal = this.itens.reduce((total, itemEntry) => {
     if (itemEntry.item && itemEntry.item.price) {
       return total + itemEntry.amount * itemEntry.item.price;
     }
     return total;
   }, 0);
-  const total = this.basePrice + itensTotal + this.installationService.price;
+
+  const total = itensTotal + this.installationService.price;
   return total;
 });
 

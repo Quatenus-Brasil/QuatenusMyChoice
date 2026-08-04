@@ -37,11 +37,6 @@ const deviceSchema = new Schema(
       type: String,
       default: null,
     },
-    basePrice: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
     itens: {
       type: [itensSchema],
       default: [],
@@ -67,10 +62,6 @@ const deviceSchema = new Schema(
 
 // Virtual field para calcular o preço total dinamicamente
 deviceSchema.virtual("price").get(function () {
-  if (!this.itens || this.itens.length === 0) {
-    return this.basePrice;
-  }
-
   //soma: (amount * item.price) para cada item
   const itensTotal = this.itens.reduce((total, itemEntry) => {
     if (itemEntry.item && itemEntry.item.price) {
@@ -79,7 +70,7 @@ deviceSchema.virtual("price").get(function () {
     return total;
   }, 0);
 
-  const total = this.basePrice + itensTotal;
+  const total = itensTotal;
   return total;
 });
 

@@ -8,7 +8,6 @@ const createAccessory = async (request, response) => {
       code: request.body.code,
       desc: request.body.desc,
       observation: request.body.observation,
-      basePrice: request.body.basePrice,
       itens: request.body.itens,
       installationService: request.body.installationService,
       banner: request.body.banner,
