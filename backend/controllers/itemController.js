@@ -24,6 +24,15 @@ const createItem = async (request, response) => {
 const findAllItems = async (request, response) => {
   try {
     const allItems = await Item.find({});
+
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
+    if (!canSeePrice) {
+      allItems.forEach((item) => {
+        item.price = undefined;
+      });
+    }
+
     return response.status(200).json({ success: true, message: "Todos os itens foram encontrados com sucesso", result: allItems });
   } catch (error) {
     console.log(error);
@@ -39,6 +48,12 @@ const findItemById = async (request, response) => {
 
     if (!item) {
       return response.status(404).json({ success: false, message: "Nenhum item encontrado" });
+    }
+
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
+    if (!canSeePrice) {
+      item.price = undefined;
     }
 
     return response.status(200).json({ success: true, message: "Item encontrado com sucesso", result: item });

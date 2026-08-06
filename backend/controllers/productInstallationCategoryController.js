@@ -24,6 +24,14 @@ const findAllProductInstallationCategories = async (request, response) => {
   try {
     const allProductInstallationCategories = await ProductInstallationCategory.find({});
 
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
+    if (!canSeePrice) { 
+      allProductInstallationCategories.forEach((item) => {
+        item.price = undefined;
+      });
+    }
+
     return response.status(200).json({ success: true, message: "Todas as categorias de instalação de acessório foram encontradas com sucesso", result: allProductInstallationCategories });
   } catch (error) {
     console.log(error);
@@ -39,6 +47,12 @@ const findProductInstallationCategoryById = async (request, response) => {
 
     if (!productInstallationCategory) {
       return response.status(404).json({ success: false, message: "Nenhuma categoria de instalação de acessório encontrada" });
+    }
+
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
+    if (!canSeePrice) {
+      productInstallationCategory.price = undefined;
     }
 
     return response.status(200).json({ success: true, message: "Categoria de instalação de acessório encontrada com sucesso", result: productInstallationCategory });

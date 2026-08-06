@@ -27,8 +27,7 @@ const createDevice = async (request, response) => {
 
 const findAllDevices = async (request, response) => {
   try {
-    // TODO: Lembrar de desativar o populate do findAll quando for fazer o front
-    const allDevices = await Device.find({}).populate("itens.item");
+    const allDevices = await Device.find({});
 
     return response.status(200).json({ success: true, message: "Todos os dispositivos foram encontrados com sucesso", result: allDevices });
   } catch (error) {
@@ -41,12 +40,17 @@ const findDeviceById = async (request, response) => {
   try {
     const { id } = request.params;
 
-    const device = await Device.findById(id).populate("itens.item").populate("createdBy", "name email").populate("updatedBy", "name email");
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
+    const device = await Device.findById(id)
+      .populate("itens.item", canSeePrice ? "" : "-price")
+      .populate("createdBy", "name email")
+      .populate("updatedBy", "name email");
     if (!device) {
       return response.status(404).json({ success: false, message: "Nenhum dispositivo encontrado" });
     }
 
-    return response.status(200).json({ success: true, message: "Dispositivo encontrado com sucesso", result: device });
+    return response.status(200).json({ success: true, message: "Dispositivo encontrado com sucesso", result: device.toObject({ virtuals: canSeePrice }) });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -78,7 +82,7 @@ const editDevice = async (request, response) => {
       updatedBy: request.user._id,
     };
 
-    const updatedDevice = await Device.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true })
+    const updatedDevice = await Device.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true });
 
     if (!updatedDevice) {
       return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });

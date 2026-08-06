@@ -28,8 +28,7 @@ const createAccessory = async (request, response) => {
 
 const findAllAccessories = async (request, response) => {
   try {
-    // TODO: Lembrar de desativar o populate do findAll quando for fazer o front
-    const allAccessories = await Accessory.find({}).populate("itens.item installationService");
+    const allAccessories = await Accessory.find({});
 
     return response.status(200).json({ success: true, message: "Todos os acessórios foram encontrados com sucesso", result: allAccessories });
   } catch (error) {
@@ -42,9 +41,11 @@ const findAccessoryById = async (request, response) => {
   try {
     const { id } = request.params;
 
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
     const accessory = await Accessory.findById(id)
-      .populate("itens.item")
-      .populate("installationService")
+      .populate("itens.item", canSeePrice ? "" : "-price")
+      .populate("installationService", canSeePrice ? "" : "-price")
       .populate("createdBy", "name email")
       .populate("updatedBy", "name email");
 
@@ -52,7 +53,7 @@ const findAccessoryById = async (request, response) => {
       return response.status(404).json({ success: false, message: "Nenhum acessório encontrado" });
     }
 
-    return response.status(200).json({ success: true, message: "Acessório encontrado com sucesso", result: accessory });
+    return response.status(200).json({ success: true, message: "Acessório encontrado com sucesso", result: accessory.toObject({ virtuals: canSeePrice }) });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -84,7 +85,7 @@ const editAccessory = async (request, response) => {
       updatedBy: request.user._id,
     };
 
-    const updatedAccessory = await Accessory.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true })
+    const updatedAccessory = await Accessory.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true });
 
     if (!updatedAccessory) {
       return response.status(404).json({ success: false, message: "Acessório não encontrado" });

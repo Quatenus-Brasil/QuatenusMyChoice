@@ -25,6 +25,14 @@ const findAllChips = async (request, response) => {
   try {
     const allChips = await Chip.find({});
 
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
+    if (!canSeePrice) {
+      allChips.forEach((item) => {
+        item.price = undefined;
+      });
+    }
+
     return response.status(200).json({ success: true, message: "Todos os chips foram encontrados com sucesso", result: allChips });
   } catch (error) {
     console.log(error);
@@ -40,6 +48,12 @@ const findChipById = async (request, response) => {
 
     if (!chip) {
       return response.status(404).json({ success: false, message: "Nenhum chip encontrado" });
+    }
+
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
+    if (!canSeePrice) {
+      chip.price = undefined;
     }
 
     return response.status(200).json({ success: true, message: "Chip encontrado com sucesso", result: chip });
