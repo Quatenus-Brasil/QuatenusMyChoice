@@ -83,26 +83,26 @@ const isAdmin = (request, response, next) => {
   next();
 };
 
-// const isManager = (request, response, next) => {
-//   if (request.user.manager === false && request.user.admin === false) {
-//     return response.status(403).json({
-//       success: false,
-//       message: "Sem Permissão: Você precisa ser um gerente ou administrador",
-//     });
-//   }
-//   next();
-// };
+const isManager = (request, response, next) => {
+  if (request.user.manager === false && request.user.admin === false) {
+    return response.status(403).json({
+      success: false,
+      message: "Sem Permissão: Você precisa ser um gerente ou administrador",
+    });
+  }
+  next();
+};
 
-// const authorizedSectors = (...allowedSectors) => {
-//   return (request, response, next) => {
-//     if (!allowedSectors.includes(request.user.sector) && request.user.admin === false) {
-//       return response.status(403).json({
-//         success: false,
-//         message: "Sem Permissão: Você não pertence a um setor autorizado",
-//       });
-//     }
-//     next();
-//   };
-// };
+const authorizedSectors = (...allowedSectors) => {
+  return (request, response, next) => {
+    if (!allowedSectors.includes(request.user.sector) && request.user.admin === false) {
+      return response.status(403).json({
+        success: false,
+        message: "Sem Permissão: Você não pertence a um setor autorizado",
+      });
+    }
+    next();
+  };
+};
 
-export { authenticateUser, isAdmin };
+export { authenticateUser, isAdmin, isManager, authorizedSectors };

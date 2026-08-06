@@ -6,16 +6,31 @@ import {
   deleteAccessoryInstallationCategory,
   editAccessoryInstallationCategory,
 } from "../controllers/accessoryInstallationCategoryController.js";
-import { authenticateUser, isAdmin } from "../middlewares/authMiddleware.js";
+import { authenticateUser, isAdmin, isManager, authorizedSectors } from "../middlewares/authMiddleware.js";
 import { validId } from "../middlewares/globalMiddleware.js";
 import { validate } from "../middlewares/validationMiddleware.js";
 import { createAccessoryInstallationCategorySchema, editAccessoryInstallationCategorySchema } from "../schemas/accessoryInstallationCategorySchema.js";
 const router = express.Router();
 
-router.post("/", authenticateUser, validate(createAccessoryInstallationCategorySchema), createAccessoryInstallationCategory);
+router.post(
+  "/",
+  authenticateUser,
+  isManager,
+  authorizedSectors("Suporte & Operações"),
+  validate(createAccessoryInstallationCategorySchema),
+  createAccessoryInstallationCategory,
+);
 router.get("/", authenticateUser, findAllAccessoryInstallationCategories);
 router.get("/:id", authenticateUser, validId, findAccessoryInstallationCategoryById);
-router.delete("/:id", authenticateUser, validId, deleteAccessoryInstallationCategory);
-router.patch("/:id", authenticateUser, validId, validate(editAccessoryInstallationCategorySchema), editAccessoryInstallationCategory);
+router.delete("/:id", authenticateUser, validId, isManager, authorizedSectors("Suporte & Operações"), deleteAccessoryInstallationCategory);
+router.patch(
+  "/:id",
+  authenticateUser,
+  validId,
+  isManager,
+  authorizedSectors("Suporte & Operações"),
+  validate(editAccessoryInstallationCategorySchema),
+  editAccessoryInstallationCategory,
+);
 
 export default router;
