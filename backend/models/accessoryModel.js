@@ -33,6 +33,10 @@ const accessorySchema = new Schema(
       type: String,
       required: true,
     },
+        banner: {
+      type: String,
+      default: null,
+    },
     observation: {
       type: String,
       default: null,
@@ -46,10 +50,6 @@ const accessorySchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "AccessoryInstallationCategory",
       required: true,
-    },
-    banner: {
-      type: String,
-      default: null,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

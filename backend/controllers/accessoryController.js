@@ -7,10 +7,10 @@ const createAccessory = async (request, response) => {
       name: request.body.name,
       code: request.body.code,
       desc: request.body.desc,
+      banner: request.body.banner,
       observation: request.body.observation,
       itens: request.body.itens,
       installationService: request.body.installationService,
-      banner: request.body.banner,
       createdBy: request.user._id,
       updatedBy: request.user._id,
     };

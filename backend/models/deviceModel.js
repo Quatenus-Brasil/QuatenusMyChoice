@@ -33,6 +33,10 @@ const deviceSchema = new Schema(
       type: String,
       required: true,
     },
+    banner: {
+      type: String,
+      default: null,
+    },
     observation: {
       type: String,
       default: null,
@@ -41,10 +45,6 @@ const deviceSchema = new Schema(
       type: [itensSchema],
       default: [],
       required: true,
-    },
-    banner: {
-      type: String,
-      default: null,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
