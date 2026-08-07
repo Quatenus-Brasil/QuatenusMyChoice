@@ -27,7 +27,7 @@ const deleteImage = async (bannerPath) => {
       headers: { Authorization: `Bearer ${process.env.OPENINARY_API_KEY}` },
     });
   } catch (error) {
-    console.log(`Falha ao deletar imagem do Openinary: ${error.message}`);
+    console.log(`Falha ao deletar imagem ${bannerPath} do Openinary: ${error.message}`);
   }
 };
 
