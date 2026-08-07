@@ -13,7 +13,7 @@ const createProductInstallationCategory = async (request, response) => {
 
     const productInstallationCategory = await ProductInstallationCategory.create(newProductInstallationCategory);
 
-    return response.status(201).json({ success: true, message: "Categoria de instalação de acessório criada com sucesso", result: productInstallationCategory });
+    return response.status(201).json({ success: true, message: "Categoria de instalação de produto criada com sucesso", result: productInstallationCategory });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -32,7 +32,7 @@ const findAllProductInstallationCategories = async (request, response) => {
       });
     }
 
-    return response.status(200).json({ success: true, message: "Todas as categorias de instalação de acessório foram encontradas com sucesso", result: allProductInstallationCategories });
+    return response.status(200).json({ success: true, message: "Todas as categorias de instalação de produto foram encontradas com sucesso", result: allProductInstallationCategories });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -46,7 +46,7 @@ const findProductInstallationCategoryById = async (request, response) => {
     const productInstallationCategory = await ProductInstallationCategory.findById(id).populate("createdBy", "name email").populate("updatedBy", "name email");
 
     if (!productInstallationCategory) {
-      return response.status(404).json({ success: false, message: "Nenhuma categoria de instalação de acessório encontrada" });
+      return response.status(404).json({ success: false, message: "Nenhuma categoria de instalação de produto encontrada" });
     }
 
     const canSeePrice = request.user.admin === true || request.user.manager === true;
@@ -55,7 +55,7 @@ const findProductInstallationCategoryById = async (request, response) => {
       productInstallationCategory.price = undefined;
     }
 
-    return response.status(200).json({ success: true, message: "Categoria de instalação de acessório encontrada com sucesso", result: productInstallationCategory });
+    return response.status(200).json({ success: true, message: "Categoria de instalação de produto encontrada com sucesso", result: productInstallationCategory });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -68,10 +68,10 @@ const deleteProductInstallationCategory = async (request, response) => {
     const productInstallationCategory = await ProductInstallationCategory.findByIdAndDelete(id);
 
     if (!productInstallationCategory) {
-      return response.status(404).json({ success: false, message: "Categoria de instalação de acessório não encontrada" });
+      return response.status(404).json({ success: false, message: "Categoria de instalação de produto não encontrada" });
     }
 
-    return response.status(200).json({ success: true, message: `A categoria de instalação de acessório "${productInstallationCategory.name}" foi excluída com sucesso` });
+    return response.status(200).json({ success: true, message: `A categoria de instalação de produto "${productInstallationCategory.name}" foi excluída com sucesso` });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
@@ -90,10 +90,10 @@ const editProductInstallationCategory = async (request, response) => {
     const updatedProductInstallationCategory = await ProductInstallationCategory.findByIdAndUpdate(id, updateData, { returnDocument: "after", runValidators: true });
 
     if (!updatedProductInstallationCategory) {
-      return response.status(404).json({ success: false, message: "Categoria de instalação de acessório não encontrada" });
+      return response.status(404).json({ success: false, message: "Categoria de instalação de produto não encontrada" });
     }
 
-    return response.status(200).json({ success: true, message: "Categoria de instalação de acessório editada", result: updatedProductInstallationCategory });
+    return response.status(200).json({ success: true, message: "Categoria de instalação de produto editada", result: updatedProductInstallationCategory });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ success: false, message: error.message });
