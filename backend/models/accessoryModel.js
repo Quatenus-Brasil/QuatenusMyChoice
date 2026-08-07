@@ -33,7 +33,7 @@ const accessorySchema = new Schema(
       type: String,
       required: true,
     },
-        banner: {
+    banner: {
       type: String,
       default: null,
     },
@@ -67,7 +67,7 @@ const accessorySchema = new Schema(
 
 // Virtual field para calcular o preço total dinamicamente
 accessorySchema.virtual("price").get(function () {
-   //soma: (amount * item.price) para cada item
+  //soma: (amount * item.price) para cada item
   const itensTotal = this.itens.reduce((total, itemEntry) => {
     if (itemEntry.item && itemEntry.item.price) {
       return total + itemEntry.amount * itemEntry.item.price;

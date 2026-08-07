@@ -1,5 +1,6 @@
 import Accessory from "../models/accessoryModel.js";
 import mongoose from "mongoose";
+import { deleteImage } from "../services/openinaryService.js";
 
 const createAccessory = async (request, response) => {
   try {
@@ -69,6 +70,8 @@ const deleteAccessory = async (request, response) => {
       return response.status(404).json({ success: false, message: "Acessório não encontrado" });
     }
 
+    if (accessory.banner) await deleteImage(accessory.banner);
+
     return response.status(200).json({ success: true, message: `O acessório "${accessory.name}" foi excluído com sucesso` });
   } catch (error) {
     console.log(error);
@@ -79,6 +82,15 @@ const deleteAccessory = async (request, response) => {
 const editAccessory = async (request, response) => {
   try {
     const { id } = request.params;
+
+    const currentAccessory = await Accessory.findById(id);
+    if (!currentAccessory) {
+      return response.status(404).json({ success: false, message: "Acessório não encontrado" });
+    }
+
+    if (request.body.banner && request.body.banner !== currentAccessory.banner) {
+      await deleteImage(currentAccessory.banner);
+    }
 
     const updateData = {
       ...request.body,
