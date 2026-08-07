@@ -1,5 +1,6 @@
 import Device from "../models/deviceModel.js";
 import mongoose from "mongoose";
+import { deleteImage } from "../services/openinaryService.js";
 
 const createDevice = async (request, response) => {
   try {
@@ -66,6 +67,8 @@ const deleteDevice = async (request, response) => {
       return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });
     }
 
+    if (device.banner) await deleteImage(device.banner);
+
     return response.status(200).json({ success: true, message: `O dispositivo "${device.name}" foi excluído com sucesso` });
   } catch (error) {
     console.log(error);
@@ -76,6 +79,15 @@ const deleteDevice = async (request, response) => {
 const editDevice = async (request, response) => {
   try {
     const { id } = request.params;
+
+    const currentDevice = await Device.findById(id);
+    if (!currentDevice) {
+      return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });
+    }
+
+    if (request.body.banner && request.body.banner !== currentDevice.banner) {
+      await deleteImage(currentDevice.banner);
+    }
 
     const updateData = {
       ...request.body,

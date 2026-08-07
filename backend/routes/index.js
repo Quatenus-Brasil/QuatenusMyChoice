@@ -7,10 +7,12 @@ import chipRoute from "./chipRoute.js";
 import deviceRoute from "./deviceRoute.js";
 import accessoryRoute from "./accessoryRoute.js";
 import productInstallationCategoryRoute from "./productInstallationCategoryRoute.js";
+import uploadRoute from "./uploadRoute.js";
 
 const router = Router();
 
 router.use("/user", userRoute);
+router.use("/upload", uploadRoute);
 router.use("/item", itemRoute);
 router.use("/accessory-installation-category", accessoryInstallationCategoryRoute);
 router.use("/gama", gamaRoute);
