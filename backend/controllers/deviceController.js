@@ -85,8 +85,8 @@ const editDevice = async (request, response) => {
       return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });
     }
 
-    if (request.body.banner && request.body.banner !== currentDevice.banner) {
-      await deleteImage(currentDevice.banner);
+    if ("banner" in request.body && request.body.banner !== currentDevice.banner) {
+      if (currentDevice.banner) await deleteImage(currentDevice.banner);
     }
 
     const updateData = {
