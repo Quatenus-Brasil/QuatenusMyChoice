@@ -25,7 +25,7 @@ const accessorySchema = new Schema(
       required: true,
     },
     code: {
-      type: String,
+      type: Number,
       required: true,
       unique: true,
     },
@@ -46,9 +46,8 @@ const accessorySchema = new Schema(
       default: [],
       required: true,
     },
-    installationService: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "AccessoryInstallationCategory",
+    installationCost: {
+      type: Number,
       required: true,
     },
     createdBy: {
@@ -75,7 +74,7 @@ accessorySchema.virtual("price").get(function () {
     return total;
   }, 0);
 
-  const total = itensTotal + this.installationService.price;
+  const total = itensTotal + this.installationCost;
   return total;
 });
 

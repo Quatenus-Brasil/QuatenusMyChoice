@@ -3,7 +3,7 @@ import { z } from "zod";
 const createAccessorySchema = z
   .object({
     name: z.string().trim().min(1, "Nome é obrigatório"),
-    code: z.string().trim().min(1, "Código é obrigatório"),
+    code: z.number().positive().min(1, "Código é obrigatório"),
     desc: z.string().trim().min(1, "Descrição é obrigatória"),
     banner: z.string().trim().nullable(),
     observation: z.string().trim().nullable(),
@@ -14,7 +14,7 @@ const createAccessorySchema = z
         item: z.string().trim().min(1, "Item é obrigatório"),
       }),
     ),
-    installationService: z.string().trim().min(1, "Serviço de instalação é obrigatório"),
+    installationCost: z.number().positive("Custo de instalação deve ser maior que zero"),
   })
   .strict();
 
