@@ -2,10 +2,10 @@ import { z } from "zod";
 
 const createItemSchema = z
   .object({
-    name: z.string().trim().min(1, "Nome é obrigatório"),
-    code: z.string().trim().min(1, "Código Star é obrigatório"),
-    desc: z.string().trim().min(1, "Descrição é obrigatória"),
-    price: z.number().positive("Preço deve ser maior que zero"),
+    name: z.string("Nome precisa ser uma String").trim().min(1, "Nome é obrigatório"),
+    code: z.string("Código precisa ser uma String").trim().min(1, "Código Star é obrigatório"),
+    desc: z.string("Descrição precisa ser uma String").trim().min(1, "Descrição é obrigatória"),
+    price: z.number("Preço precisa ser um número").positive("Preço deve ser maior que zero"),
   })
   .strict(); 
 
