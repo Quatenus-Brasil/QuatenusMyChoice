@@ -11,14 +11,14 @@ const createAccessory = async (request, response) => {
       banner: request.body.banner,
       observation: request.body.observation,
       itens: request.body.itens,
-      installationService: request.body.installationService,
+      installationCost: request.body.installationCost,
       createdBy: request.user._id,
       updatedBy: request.user._id,
     };
 
     const accessory = await Accessory.create(newAccessory);
 
-    await accessory.populate("itens.item installationService");
+    await accessory.populate("itens.item");
 
     return response.status(201).json({ success: true, message: "Acessório criado com sucesso", result: accessory });
   } catch (error) {

@@ -3,7 +3,7 @@ import { z } from "zod";
 const createAccessorySchema = z
   .object({
     name: z.string().trim().min(1, "Nome é obrigatório"),
-    code: z.number().positive().min(1, "Código é obrigatório"),
+    code: z.string().trim().min(1, "Código é obrigatório").regex(/^\d+$/, "Código deve conter apenas números"),
     desc: z.string().trim().min(1, "Descrição é obrigatória"),
     banner: z.string().trim().nullable(),
     observation: z.string().trim().nullable(),

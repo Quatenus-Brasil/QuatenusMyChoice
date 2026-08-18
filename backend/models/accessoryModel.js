@@ -25,9 +25,10 @@ const accessorySchema = new Schema(
       required: true,
     },
     code: {
-      type: Number,
+      type: String,
       required: true,
       unique: true,
+      match: /^\d+$/,
     },
     desc: {
       type: String,
