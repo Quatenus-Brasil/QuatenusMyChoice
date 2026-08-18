@@ -31,6 +31,14 @@ const findAllAccessories = async (request, response) => {
   try {
     const allAccessories = await Accessory.find({});
 
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
+    if (!canSeePrice) {
+      allAccessories.forEach((item) => {
+        item.installationCost = undefined;
+      });
+    }
+
     return response.status(200).json({ success: true, message: "Todos os acessórios foram encontrados com sucesso", result: allAccessories });
   } catch (error) {
     console.log(error);
@@ -46,12 +54,15 @@ const findAccessoryById = async (request, response) => {
 
     const accessory = await Accessory.findById(id)
       .populate("itens.item", canSeePrice ? "" : "-price")
-      .populate("installationService", canSeePrice ? "" : "-price")
       .populate("createdBy", "name email")
       .populate("updatedBy", "name email");
 
     if (!accessory) {
       return response.status(404).json({ success: false, message: "Nenhum acessório encontrado" });
+    }
+
+    if (!canSeePrice) {
+      accessory.installationCost = undefined;
     }
 
     return response.status(200).json({ success: true, message: "Acessório encontrado com sucesso", result: accessory.toObject({ virtuals: canSeePrice }) });
