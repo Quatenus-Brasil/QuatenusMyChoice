@@ -14,7 +14,7 @@ const createAccessorySchema = z
         item: z.string("Item precisa ser uma String").trim().min(1, "Item é obrigatório"),
       }),
     ),
-    installationCost: z.number("Custo de instalação precisa ser um número").positive("Custo de instalação deve ser maior que zero"),
+    installationCost: z.number("Custo de instalação precisa ser um número").nonnegative("Custo de instalação não pode ser negativo"),
   })
   .strict();
 
