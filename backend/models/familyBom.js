@@ -85,23 +85,23 @@ const familyBomSchema = new Schema(
       default: 0,
       required: true,
     },
-    a12: {
+    commitment12Months: {
       type: Number,
       default: 0,
     },
-    a24: {
+    commitment24Months: {
       type: Number,
       default: 0,
     },
-    a36: {
+    commitment36Months: {
       type: Number,
       default: 0,
     },
-    a48: {
+    commitment48Months: {
       type: Number,
       default: 0,
     },
-    a60: {
+    commitment60Months: {
       type: Number,
       default: 0,
     },
@@ -133,8 +133,8 @@ familyBomSchema.virtual("price").get(function () {
   }, 0);
 
   const accessoriesTotal = this.accessories.reduce((total, accessoryEntry) => {
-    if (accessoryEntry.item && accessoryEntry.item.price) {
-      return total + accessoryEntry.amount * accessoryEntry.item.price;
+    if (accessoryEntry.accessory && accessoryEntry.accessory.price) {
+      return total + accessoryEntry.amount * accessoryEntry.accessory.price;
     }
     return total;
   }, 0);
