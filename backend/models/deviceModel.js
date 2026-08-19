@@ -43,7 +43,6 @@ const deviceSchema = new Schema(
     },
     itens: {
       type: [itensSchema],
-      default: [],
       required: true,
     },
     createdBy: {

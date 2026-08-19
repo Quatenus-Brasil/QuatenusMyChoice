@@ -44,7 +44,6 @@ const accessorySchema = new Schema(
     },
     itens: {
       type: [itensSchema],
-      default: [],
       required: true,
     },
     installationCost: {

@@ -6,7 +6,6 @@ const userSchema = new Schema({
   active: {
     type: Boolean,
     required: true,
-    default: false,
   },
   name: {
     type: String,
@@ -44,12 +43,10 @@ const userSchema = new Schema({
   admin: {
     type: Boolean,
     required: true,
-    default: false,
   },
   manager: {
     type: Boolean,
     required: true,
-    default: false,
   },
   tokenVersion: {
     type: Number,
