@@ -13,18 +13,21 @@ const createFamilyBomSchema = z
         item: z.string("Item precisa ser uma String").trim().min(1, "Item é obrigatório"),
       }),
     ),
-    accessories: z.array(
-      z.object({
-        amount: z.number("Quantidade precisa ser um número").positive("Quantidade deve ser maior que zero").min(1, "Quantidade é obrigatória"),
-        accessory: z.string("Acessório precisa ser uma String").trim().min(1, "Acessório é obrigatório"),
-      }),
-    ),
+    accessories: z
+      .array(
+        z.object({
+          amount: z.number("Quantidade precisa ser um número").positive("Quantidade deve ser maior que zero").min(1, "Quantidade é obrigatória"),
+          accessory: z.string("Acessório precisa ser uma String").trim().min(1, "Acessório é obrigatório"),
+        }),
+      )
+      .optional()
+      .default([]),
     device: z.string("Dispositivo precisa ser uma String").trim().min(1, "Dispositivo é obrigatório"),
     activationGuide: z.string("Guia de ativação precisa ser uma String").trim().nullable(),
     altDevice: z.string("Dispositivo alternativo precisa ser uma String").trim().nullable(),
     altActivationGuide: z.string("Guia de ativação alternativa precisa ser uma String").trim().nullable(),
     chip: z.string("Chip precisa ser uma String").trim().nullable(),
-    riskFactor: z.number("Fator de risco precisa ser um número").nonnegative("Fator de risco não pode ser negativo"),
+    riskFactor: z.number("Fator de risco precisa ser um número"),
     commitment12Months: z.number("Adesão 12 meses precisa ser um número").nonnegative("A12 não pode ser negativo"),
     commitment24Months: z.number("Adesão 24 meses precisa ser um número").nonnegative("A24 não pode ser negativo"),
     commitment36Months: z.number("Adesão 36 meses precisa ser um número").nonnegative("A36 não pode ser negativo"),
