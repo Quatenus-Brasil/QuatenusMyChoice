@@ -40,10 +40,10 @@ const createFamilyBom = async (request, response) => {
 
 const findAllFamiliesBom = async (request, response) => {
   try {
-    const allFamiliesBom = await FamilyBom.find({});
-
     const canSeePrice = request.user.admin === true || request.user.manager === true;
-
+    
+    const allFamiliesBom = (await FamilyBom.find({})).map(familyBom => familyBom.toObject({ virtuals: canSeePrice }));
+    
     if (!canSeePrice) {
       allFamiliesBom.forEach((item) => {
         item.riskFactor = undefined;

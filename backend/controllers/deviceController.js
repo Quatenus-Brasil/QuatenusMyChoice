@@ -28,7 +28,9 @@ const createDevice = async (request, response) => {
 
 const findAllDevices = async (request, response) => {
   try {
-    const allDevices = await Device.find({});
+    const canSeePrice = request.user.admin === true || request.user.manager === true;
+
+    const allDevices = (await Device.find({}).populate("itens.item", canSeePrice ? "" : "-price")).map(device => device.toObject({ virtuals: canSeePrice }));
 
     return response.status(200).json({ success: true, message: "Todos os dispositivos foram encontrados com sucesso", result: allDevices });
   } catch (error) {

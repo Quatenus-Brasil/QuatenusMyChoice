@@ -29,9 +29,9 @@ const createAccessory = async (request, response) => {
 
 const findAllAccessories = async (request, response) => {
   try {
-    const allAccessories = await Accessory.find({});
-
     const canSeePrice = request.user.admin === true || request.user.manager === true;
+    
+    const allAccessories = (await Accessory.find({}).populate("itens.item", canSeePrice ? "" : "-price")).map(accessory => accessory.toObject({ virtuals: canSeePrice }));
 
     if (!canSeePrice) {
       allAccessories.forEach((item) => {

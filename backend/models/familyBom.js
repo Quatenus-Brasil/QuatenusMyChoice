@@ -123,24 +123,12 @@ const familyBomSchema = new Schema(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
-// Virtual field para calcular o preço total dinamicamente
 familyBomSchema.virtual("price").get(function () {
-  const itensTotal = this.itens.reduce((total, itemEntry) => {
-    if (itemEntry.item && itemEntry.item.price) {
-      return total + itemEntry.amount * itemEntry.item.price;
-    }
-    return total;
-  }, 0);
+  const itensTotal = this.itens.reduce((total, { amount, item }) => total + amount * item.price, 0);
+  const accessoriesTotal = this.accessories.reduce((total, { amount, accessory }) => total + amount * accessory.price, 0);
+  const chipPrice = this.chip ? this.chip.price : 0;
 
-  const accessoriesTotal = this.accessories.reduce((total, accessoryEntry) => {
-    if (accessoryEntry.accessory && accessoryEntry.accessory.price) {
-      return total + accessoryEntry.amount * accessoryEntry.accessory.price;
-    }
-    return total;
-  }, 0);
-
-  const total = itensTotal + accessoriesTotal + this.device.price + (this.chip && this.chip.price != null ? this.chip.price : 0) + this.installationCost;
-  return total;
+  return itensTotal + accessoriesTotal + this.device.price + chipPrice + this.installationCost;
 });
 
 const FamilyBom = mongoose.model("FamilyBom", familyBomSchema);

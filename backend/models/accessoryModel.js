@@ -64,18 +64,9 @@ const accessorySchema = new Schema(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
-// Virtual field para calcular o preço total dinamicamente
 accessorySchema.virtual("price").get(function () {
-  //soma: (amount * item.price) para cada item
-  const itensTotal = this.itens.reduce((total, itemEntry) => {
-    if (itemEntry.item && itemEntry.item.price) {
-      return total + itemEntry.amount * itemEntry.item.price;
-    }
-    return total;
-  }, 0);
-
-  const total = itensTotal + this.installationCost;
-  return total;
+  const itensTotal = this.itens.reduce((total, { amount, item }) => total + amount * item.price, 0);
+  return itensTotal + this.installationCost;
 });
 
 const Accessory = mongoose.model("Accessory", accessorySchema);
