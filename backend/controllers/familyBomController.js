@@ -1,6 +1,4 @@
 import FamilyBom from "../models/familyBomModel.js";
-import mongoose from "mongoose";
-import { deleteImage } from "../services/openinaryService.js";
 
 const createFamilyBom = async (request, response) => {
   try {

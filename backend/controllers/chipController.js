@@ -1,5 +1,4 @@
 import Chip from "../models/chipModel.js";
-import mongoose from "mongoose";
 
 const createChip = async (request, response) => {
   try {

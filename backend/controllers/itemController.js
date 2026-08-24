@@ -1,5 +1,4 @@
 import Item from "../models/itemModel.js";
-import mongoose from "mongoose";
 
 const createItem = async (request, response) => {
   try {

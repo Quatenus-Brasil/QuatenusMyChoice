@@ -1,5 +1,4 @@
 import Device from "../models/deviceModel.js";
-import mongoose from "mongoose";
 import { deleteImage } from "../services/openinaryService.js";
 
 const createDevice = async (request, response) => {

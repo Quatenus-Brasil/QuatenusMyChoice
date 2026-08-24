@@ -1,5 +1,4 @@
 import Accessory from "../models/accessoryModel.js";
-import mongoose from "mongoose";
 import { deleteImage } from "../services/openinaryService.js";
 
 const createAccessory = async (request, response) => {
