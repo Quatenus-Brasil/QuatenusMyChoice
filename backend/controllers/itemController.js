@@ -1,4 +1,5 @@
 import Item from "../models/itemModel.js";
+import { findItemDependents } from "../services/dependencyCheck.js";
 
 const createItem = async (request, response) => {
   try {
@@ -65,11 +66,23 @@ const findItemById = async (request, response) => {
 const deleteItem = async (request, response) => {
   try {
     const { id } = request.params;
-    const item = await Item.findByIdAndDelete(id);
+    const item = await Item.findById(id);
 
     if (!item) {
       return response.status(404).json({ success: false, message: "Item não encontrado" });
     }
+
+    const dependents = await findItemDependents(id);
+
+    if (dependents.length > 0) {
+      return response.status(409).json({
+        success: false,
+        message: `O item "${item.name}" não pode ser excluído pois está em uso em ${dependents.length} registro(s).`,
+        dependents,
+      });
+    }
+
+    await item.deleteOne();
 
     return response.status(200).json({ success: true, message: `O item "${item.name}" foi excluído com sucesso` });
   } catch (error) {

@@ -1,5 +1,6 @@
 import Device from "../models/deviceModel.js";
 import { deleteImage } from "../services/openinaryService.js";
+import { findDeviceDependents } from "../services/dependencyCheck.js";
 
 const createDevice = async (request, response) => {
   try {
@@ -62,11 +63,23 @@ const findDeviceById = async (request, response) => {
 const deleteDevice = async (request, response) => {
   try {
     const { id } = request.params;
-    const device = await Device.findByIdAndDelete(id);
+    const device = await Device.findById(id);
 
     if (!device) {
       return response.status(404).json({ success: false, message: "Dispositivo não encontrado" });
     }
+
+    const dependents = await findDeviceDependents(id);
+
+    if (dependents.length > 0) {
+      return response.status(409).json({
+        success: false,
+        message: `O dispositivo "${device.name}" não pode ser excluído pois está em uso em ${dependents.length} registro(s).`,
+        dependents,
+      });
+    }
+
+    await device.deleteOne();
 
     if (device.banner) await deleteImage(device.banner);
 

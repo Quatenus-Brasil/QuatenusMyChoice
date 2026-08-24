@@ -1,5 +1,6 @@
 import Accessory from "../models/accessoryModel.js";
 import { deleteImage } from "../services/openinaryService.js";
+import { findAccessoryDependents } from "../services/dependencyCheck.js";
 
 const createAccessory = async (request, response) => {
   try {
@@ -74,11 +75,23 @@ const findAccessoryById = async (request, response) => {
 const deleteAccessory = async (request, response) => {
   try {
     const { id } = request.params;
-    const accessory = await Accessory.findByIdAndDelete(id);
+    const accessory = await Accessory.findById(id);
 
     if (!accessory) {
       return response.status(404).json({ success: false, message: "Acessório não encontrado" });
     }
+
+    const dependents = await findAccessoryDependents(id);
+
+    if (dependents.length > 0) {
+      return response.status(409).json({
+        success: false,
+        message: `O acessório "${accessory.name}" não pode ser excluído pois está em uso em ${dependents.length} registro(s).`,
+        dependents,
+      });
+    }
+
+    await accessory.deleteOne();
 
     if (accessory.banner) await deleteImage(accessory.banner);
 
