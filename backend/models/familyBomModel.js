@@ -128,7 +128,7 @@ familyBomSchema.virtual("price").get(function () {
   const accessoriesTotal = this.accessories.reduce((total, { amount, accessory }) => total + amount * accessory.price, 0);
   const chipPrice = this.chip ? this.chip.price : 0;
 
-  return itensTotal + accessoriesTotal + this.device.price + chipPrice + this.installationCost;
+  return itensTotal + accessoriesTotal + this.device.price + chipPrice
 });
 
 const FamilyBom = mongoose.model("FamilyBom", familyBomSchema);

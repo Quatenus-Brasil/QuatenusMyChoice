@@ -65,8 +65,7 @@ const accessorySchema = new Schema(
 );
 
 accessorySchema.virtual("price").get(function () {
-  const itensTotal = this.itens.reduce((total, { amount, item }) => total + amount * item.price, 0);
-  return itensTotal + this.installationCost;
+  return this.itens.reduce((total, { amount, item }) => total + amount * item.price, 0);
 });
 
 const Accessory = mongoose.model("Accessory", accessorySchema);
